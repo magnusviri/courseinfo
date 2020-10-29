@@ -1,0 +1,38 @@
+<ag-grid-angular
+  #agGrid
+  id="courseGrid"
+  class="ag-theme-balham"
+  pagination="true"
+  [rowData]="rowData"
+  [columnDefs]="columnDefs"
+  [defaultColDef]="defaultColDef"
+  [paginationPageSize]="paginationPageSize"
+  (gridReady)="onGridReady($event)"
+  (rowSelected)="onRowSelected($event)"
+  (selectionChanged)="onSelectionChanged($event)"
+  ></ag-grid-angular>
+<!--
+[columnTypes]="columnTypes"
+  [showToolPanel]="showToolPanel"
+  rowSelection="multiple"
+(cellClicked)="onCellClicked($event)"
+-->
+<!-- <div class="example-header">
+    Page Size:
+    <select (change)="onPageSizeChanged()" id="page-size">
+        <option value="100" selected="">100</option>
+        <option value="500">500</option>
+        <option value="1000">1000</option>
+    </select>
+</div> -->
+<!-- <button (click)="getSelectedRows()">Get Selected Rows</button> -->
+
+<div>Tips:<br>
+    Click the column header to sort.<br>
+    To sort by 2 columns, hold shift when clicking on column headers.
+</div>
+
+<ng-template #urlCell let-row>
+    {{ row['Course Name'] }}
+    <button (click)="greet(row)">click</button>
+</ng-template>

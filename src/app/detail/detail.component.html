@@ -1,0 +1,44 @@
+<!-- https://student.apps.utah.edu/uofu/stu/ClassSchedules/main/1188/class_list.htmlsubject=BIOL -->
+<div id="details">
+
+<ng-template [ngIf]="displayMessage">{{message}}</ng-template>
+<ng-template [ngIf]="!course">Select something</ng-template>
+<ng-template [ngIf]="course">
+    <p><span class="col1">Catalog</span><span class="col2">{{course.cat}}</span></p>
+    <p><span class="col1">Semester</span><span class="col2">{{course.sem}}</span></p>
+    <p><span class="col1">Year</span><span class="col2">{{course.yea}}</span></p>
+    <p><span class="col1">Name</span><span class="col2">{{course.nam}}</span></p>
+    <p><span class="col1">Number</span><span class="col2">{{course.num}}</span></p>
+    <p><span class="col1">Instructors</span><span class="col2">{{course.ins}}</span></p>
+
+    <p><span *ngFor="let instructor as course.ins" class="col2">
+            {{instructor[0]}}
+    </span></p>
+
+
+    <p><span class="col1">Gen Ed</span><span class="col2">{{course.gen}}</span></p>
+    <p><span class="col1">Component</span><span class="col2">{{course.com}}</span></p>
+    <p><span class="col1">Section</span><span class="col2">{{course.sec}}</span></p>
+    <p><span class="col1">Enrolled</span><span class="col2">{{course.enr}}</span></p>
+    <p><span class="col1">Capacity</span><span class="col2">{{course.cap}}</span></p>
+    <p><span class="col1">Description</span><span class="col2">{{course.des}}</span></p>
+    <p><span class="col1">ID</span><span class="col2">{{course.id}}</span></p>
+    <p><span class="col1">Requisites</span><span class="col2">{{course.rek}}</span></p>
+    <p><span class="col1">Requiments </span><span class="col2">{{course.req}}</span></p>
+    <p><span class="col1">Syllabus</span><span class="col2"><a href="{{course.syl}}">Syllabus</a></span></p>
+    <p><span class="col1">Type</span><span class="col2">{{course.typ}}</span></p>
+    <p><span class="col1">Unit</span><span class="col2">{{course.uni}}</span></p>
+
+    <!-- 
+    <p>Fee course.fee</span></p>
+    // field: 'Type' ,
+    // field: 'Units' ,
+    // field: 'Course Attributes' ,
+    // field: 'Course Components' ,
+    // field: 'Wait List', type: 'nonEditableColumn' 
+    // field: 'Description',
+    // field: 'Seats Available' 
+    // field: 'Sections URL',
+    -->
+</ng-template>
+</div>

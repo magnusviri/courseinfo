@@ -1,26 +1,22 @@
-<h1>Angular Multiselect Dropdown with Search - ItSolutionStuff.com</h1>
+<div id="grid">
+    <div>
+        <h2>Filters</h2>
+        <form action="" target="" method="">
+            <span class=".ag-header-cell-text">Semesters</span>
+            <app-semesters></app-semesters>
+            <span class=".ag-header-cell-text">Courses</span>
+            <app-courses></app-courses>
+            <span class=".ag-header-cell-text">Instructors</span>
+            <app-instructors></app-instructors>
+            <span class=".ag-header-cell-text">General Ed</span>
+            <app-geneds></app-geneds>
+        </form>
+    </div>
 
-<ng-select [items]="categories"
-               bindLabel="name"
-               placeholder="Select Category"
-               appendTo="body"
-               [multiple]="true"
-               [(ngModel)]="selected">
-</ng-select>
-
-<button (click)="getSelectedValue()">Get Selected Values</button>
-
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * The content above * * * * * * * * * * * -->
-<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * -->
-<!-- * * * * * * * * * * and can be replaced. * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * End of Placeholder * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-
-<h2>General Education Requirements</h2>
-<div *ngFor="let gen_ed of gen_ed$ | async">
-  <h3>{{gen_ed}}</h3>
+    <div>
+        <app-table-view></app-table-view>
+    </div>
+    <div>
+        <router-outlet></router-outlet>
+    </div>
 </div>
-
-<router-outlet></router-outlet>
