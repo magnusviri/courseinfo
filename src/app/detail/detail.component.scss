@@ -1,5 +1,9 @@
 $width1: 80px;
 $width2: 200px; // total 360
+#details {
+
+    // border
+}
 p {
     display: flex;
     align-items: flex-start;
@@ -12,7 +16,7 @@ p {
     width: $width1;
     // text-align: right;
     margin: 0 0 0 0;
-    background-color: red;
+    background-color: #aaa;
     display: flex;
       justify-content: center;
     align-items: center;
@@ -20,5 +24,5 @@ p {
 .col1+.col2 {
     width: $width2;
     margin: 0 $width1 0 0;
-    background-color: blue;
+    background-color:#aaf;
 }

@@ -4,8 +4,8 @@ Web view of course data. Written in Angular.
 
 ## Install and run dev environment
 
-	git clone https://github.com/magnusviri/courses-backend.git
-	cd courses-backend
+	git clone https://github.com/magnusviri/courses-frontend.git
+	cd courses-frontend
 	npm install
 	ng serve
 
