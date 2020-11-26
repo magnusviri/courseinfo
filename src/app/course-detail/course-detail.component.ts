@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { BackendService } from '../backend/backend.service';
+
+import { BackendService } from '../datastore.service';
 import { ActivatedRoute, NavigationStart, NavigationEnd, Router } from '@angular/router';
 
-import { CommonModule } from '@angular/common';  
+import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 
-
 @Component({
-  selector: 'app-detail',
-  templateUrl: './detail.component.html',
-  styleUrls: ['./detail.component.scss']
+  selector: 'app-course-detail',
+  templateUrl: './course-detail.component.html',
+  styleUrls: ['./course-detail.component.scss']
 })
-export class DetailComponent implements OnInit {
+export class CourseDetailComponent implements OnInit {
   public course: any;
   displayMessage = false;
   message = "";
@@ -37,15 +37,13 @@ export class DetailComponent implements OnInit {
 
     console.log("DetailComponent ngOnInit end");
 
-    this.router.events.subscribe(evt => { 
+    this.router.events.subscribe(evt => {
       if (evt instanceof NavigationStart) {
         this.message = 'Loading...';
         this.displayMessage = true;
       }
       if (evt instanceof NavigationEnd) this.displayMessage = false;
     });
-  
-
   }
 
 }

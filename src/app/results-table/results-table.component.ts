@@ -3,15 +3,15 @@ import { AgGridAngular } from 'ag-grid-angular';
 // import { GridOptions, Module, AllCommunityModules } from "@ag-grid-community/all-modules";
 
 // import { TemplateRendererComponent } from '../template-renderer/template-renderer.component';
-import { BackendService } from '../backend/backend.service';
+import { BackendService } from '../datastore.service';
 import { CellRouterLinkComponent } from '../cell-router-link/cell-router-link.component';
 
 @Component({
-  selector: 'app-table-view',
-  templateUrl: './table-view.component.html',
-  styleUrls: ['./table-view.component.scss']
+  selector: 'app-results-table',
+  templateUrl: './results-table.component.html',
+  styleUrls: ['./results-table.component.scss']
 })
-export class TableViewComponent {
+export class ResultsTableComponent {
   @ViewChild('agGrid') agGrid: AgGridAngular;
  
   private gridApi;
@@ -25,8 +25,8 @@ export class TableViewComponent {
 
   constructor(private backend: BackendService) {
 //     this.gridOptions = <GridOptions>{
-// //       columnDefs: TableViewComponent.createColumnDefs(),
-// //       defaultColDef: TableViewComponent.createDefaultColDef(),
+// //       columnDefs: ResultsTableComponent.createColumnDefs(),
+// //       defaultColDef: ResultsTableComponent.createDefaultColDef(),
 //     };
   }
 
@@ -40,7 +40,7 @@ export class TableViewComponent {
       suppressMenu: true,
       filter: 'agTextColumnFilter',
     };
-    this.columnDefs = TableViewComponent.createColumnDefs();
+    this.columnDefs = ResultsTableComponent.createColumnDefs();
 
   //   gridOptions.onRowClicked = params => {
   //     console.log(params);

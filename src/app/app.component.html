@@ -3,18 +3,18 @@
         <h2>Filters</h2>
         <form action="" target="" method="">
             <span class=".ag-header-cell-text">Semesters</span>
-            <app-semesters></app-semesters>
+            <app-semester-select-list></app-semester-select-list>
             <span class=".ag-header-cell-text">Courses</span>
-            <app-courses></app-courses>
+            <app-course-select-list></app-course-select-list>
             <span class=".ag-header-cell-text">Instructors</span>
-            <app-instructors></app-instructors>
+            <app-instructor-select-list></app-instructor-select-list>
             <span class=".ag-header-cell-text">General Ed</span>
-            <app-geneds></app-geneds>
+            <app-attr-select-list></app-attr-select-list>
         </form>
     </div>
 
     <div>
-        <app-table-view></app-table-view>
+        <app-results-table></app-results-table>
     </div>
     <div>
         <router-outlet></router-outlet>

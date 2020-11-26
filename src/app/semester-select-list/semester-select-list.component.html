@@ -1,0 +1,5 @@
+<mat-selection-list dense #semesters [(ngModel)]="selectedOptions" (ngModelChange)="onNgModelChange($event)">
+  <mat-list-option *ngFor="let semester of backend.semesters" [value]="semester.id">
+    {{semester.year}} {{semester.season}}
+  </mat-list-option>
+</mat-selection-list>

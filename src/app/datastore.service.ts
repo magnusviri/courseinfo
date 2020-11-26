@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AgGridAngular } from 'ag-grid-angular';
-import { Semester } from './semester';
-import { Instructor } from './instructor';
-import { GenEd } from './gened';
-import { Course } from './course';
+import { Semester } from './datastore/semester';
+import { Instructor } from './datastore/instructor';
+import { GenEd } from './datastore/gened';
+import { Course } from './datastore/course';
 
-import { GENEDS } from './geneds-stub';
+import { GENEDS } from './datastore/geneds-stub';
 
 @Injectable({
   providedIn: 'root'

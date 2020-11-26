@@ -1,0 +1,11 @@
+<mat-selection-list dense #geneds [(ngModel)]="selectedOptions" (ngModelChange)="onNgModelChange($event)">
+  <mat-list-option *ngFor="let gened of backend.geneds" [value]="gened.name">
+  <span *ngIf="gened.name.length > 20; then thenBlock else elseBlock"></span>
+  <ng-template #thenBlock>
+    <span matTooltip="{{gened.name}}" matTooltipPosition="after">
+      {{gened.name | truncate : 20}}
+    </span>
+  </ng-template>
+  <ng-template #elseBlock><span>{{gened.name}}</span></ng-template>
+  </mat-list-option>
+</mat-selection-list>

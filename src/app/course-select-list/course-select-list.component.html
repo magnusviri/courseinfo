@@ -1,0 +1,11 @@
+<mat-selection-list dense #courseList [(ngModel)]="selectedOptions" (ngModelChange)="onNgModelChange($event)">
+  <mat-list-option *ngFor="let course of backend.courseList" [value]="course.id">
+  <span *ngIf="course.name.length + 5 > 19; then thenBlock else elseBlock"></span>
+  <ng-template #thenBlock>
+    <span matTooltip="{{course.catalog}} {{course.name}}" matTooltipPosition="after">
+      {{course.catalog}} {{course.name | truncate : 14}}
+    </span>
+  </ng-template>
+  <ng-template #elseBlock><span>{{course.catalog}} {{course.name}}</span></ng-template>
+  </mat-list-option>
+</mat-selection-list>

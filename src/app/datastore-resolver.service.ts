@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Resolve } from '@angular/router';
 
-import { BackendService } from './backend.service';
+import { BackendService } from './datastore.service';
 
 @Injectable({
   providedIn: 'root'

@@ -1,15 +1,13 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { DetailComponent } from './detail/detail.component';
+import { CourseDetailComponent } from './course-detail/course-detail.component';
 
 import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
-import { BackendResolverService } from './backend/backend-resolver.service';
-
+import { BackendResolverService } from './datastore-resolver.service';
 
 const routes: Routes = [
-  { path:  'course/:courseId', component: DetailComponent, resolve: { items: BackendResolverService } },
+  { path:  'course/:courseId', component: CourseDetailComponent, resolve: { items: BackendResolverService } },
   { path: '**',   redirectTo: '/', },
-
 ];
 
 @NgModule({
