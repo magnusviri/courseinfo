@@ -1,11 +1,20 @@
-<mat-selection-list dense #geneds [(ngModel)]="selectedOptions" (ngModelChange)="onNgModelChange($event)">
-  <mat-list-option *ngFor="let gened of backend.geneds" [value]="gened.name">
-  <span *ngIf="gened.name.length > 20; then thenBlock else elseBlock"></span>
-  <ng-template #thenBlock>
-    <span matTooltip="{{gened.name}}" matTooltipPosition="after">
-      {{gened.name | truncate : 20}}
-    </span>
-  </ng-template>
-  <ng-template #elseBlock><span>{{gened.name}}</span></ng-template>
-  </mat-list-option>
-</mat-selection-list>
+<div>
+    <input
+        type="text"
+        (input)="onQuickFilterChanged()"
+        id="attrSelectListFilter"
+        placeholder="Filter attributes"
+    />
+    <ag-grid-angular
+        id="attrSelectListGrid"
+        class="ag-theme-balham"
+        [rowData]="rowData"
+        [columnDefs]="columnDefs"
+        [suppressRowClickSelection]="true"
+        [rowSelection]="rowSelection"
+        [defaultColDef]="defaultColDef"
+        (gridReady)="onGridReady($event)"
+        (selectionChanged)="onSelectionChanged($event)"
+        [enableBrowserTooltips]="true"
+    ></ag-grid-angular>
+</div>

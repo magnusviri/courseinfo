@@ -1,28 +1,55 @@
 $width1: 80px;
 $width2: 200px; // total 360
-#details {
 
-    // border
+#detailsComponent {
+    background-color:var(--ag-background-color, #FFF);
+    height: 100%;
+    padding: 10px;
+    border: 1px solid var(--ag-border-color, #bdc3c7);;
+}
+
+#welcomeComponent {
+    width: 360px;;
 }
 p {
-    display: flex;
-    align-items: flex-start;
-    height: 28px;
+    margin: 10px;
 }
-.col2,.col2 {
-    display: inline-block;
+ul {
+    padding-inline-start: 40px;
 }
-.col1 {
-    width: $width1;
-    // text-align: right;
-    margin: 0 0 0 0;
-    background-color: #aaa;
-    display: flex;
-      justify-content: center;
+
+h1 {
     align-items: center;
-    }
-.col1+.col2 {
-    width: $width2;
-    margin: 0 $width1 0 0;
-    background-color:#aaf;
+    font-size: medium;
+}
+#detailsView {
+    display: grid;
+    grid-template-columns: $width1 $width2;
+    grid-gap: 10px;
+    margin: 10px;
+    // background-color:var(--ag-row-hover-color);
+    // border
+}
+// #details > div {
+//     background-color: #ddd;
+//     color: black;
+//     padding: 10px;
+// }
+// p {
+//     display: flex;
+//     align-items: flex-start;
+//     height: 28px;
+// }
+.col1 {
+    grid-column-start: 1;
+    // width: $width1;
+    text-align: right;
+    // margin: 0 0 0 0;
+    // display: flex;
+    //   justify-content: center;
+    // align-items: center;
+}
+.col2 {
+    grid-column-start: 2;
+
 }

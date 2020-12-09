@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
-import { BackendService } from '../datastore.service';
+import { DatastoreService } from '../datastore.service';
 import { ActivatedRoute, NavigationStart, NavigationEnd, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
@@ -11,39 +12,60 @@ import { BrowserModule } from '@angular/platform-browser';
   templateUrl: './course-detail.component.html',
   styleUrls: ['./course-detail.component.scss']
 })
-export class CourseDetailComponent implements OnInit {
+export class CourseDetailComponent implements OnInit, OnDestroy {
   public course: any;
-  displayMessage = false;
-  message = "";
+  displayLoading = false;
+  welcomePage = false;
   capacity:number;
+  private datastoreMessages: Subscription;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    public backend: BackendService,
+    public datastore: DatastoreService,
   ) { }
 
   ngOnInit() {
-    console.log("DetailComponent ngOnInit start");
     this.route.paramMap.subscribe(params => {
-      console.log("DetailComponent ngOnInit getting params");
-      this.course = this.backend.getCourse(Number(params.get('courseId')));
-      // courseIds[params.get('courseId')];
-
-      console.log(this.course);
-      console.log(params);
-    });
-
-
-    console.log("DetailComponent ngOnInit end");
-
-    this.router.events.subscribe(evt => {
-      if (evt instanceof NavigationStart) {
-        this.message = 'Loading...';
-        this.displayMessage = true;
+      var course_number = Number(params.get('course_number'));
+      if (course_number == 0) {
+        this.welcomePage = true;
+      } else {
+        this.course = this.datastore.getCourse(course_number);
+        if (!this.course) {
+          this.displayLoading = true;
+          this.datastoreMessages = this.datastore.onMessage().subscribe(message => {
+            if (message) {
+              if (message.text == "courses_loaded") {
+                this.course = this.datastore.getCourse(course_number);
+                if (this.course) {
+                  this.datastoreMessages.unsubscribe();
+                  this.displayLoading = false;
+                }
+                console.log(this.course);
+              }
+            }
+          });
+        }
       }
-      if (evt instanceof NavigationEnd) this.displayMessage = false;
     });
+    this.router.events.subscribe(event => {
+      this.welcomePage = false;
+      if (event instanceof NavigationStart) {
+        this.displayLoading = true;
+      } else if (event instanceof NavigationEnd) {
+        if (this.course) {
+        this.displayLoading = false;
+        }
+      }
+    });
+
+  }
+
+  ngOnDestroy() {
+    if (this.datastoreMessages && !this.datastoreMessages.closed) {
+      this.datastoreMessages.unsubscribe();
+    }
   }
 
 }

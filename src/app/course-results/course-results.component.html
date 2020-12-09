@@ -1,0 +1,32 @@
+<ag-grid-angular
+    id="resultsGrid"
+    class="ag-theme-balham"
+    [rowData]="rowData"
+    [columnDefs]="columnDefs"
+    [suppressRowClickSelection]="true"
+    [defaultColDef]="defaultColDef"
+    (gridReady)="onGridReady($event)"
+    pagination="true"
+    [paginationPageSize]="paginationPageSize"
+    [isExternalFilterPresent]="isExternalFilterPresent"
+    [doesExternalFilterPass]="doesExternalFilterPass"
+></ag-grid-angular>
+<!--
+    [showToolPanel]="showToolPanel"
+-->
+
+<div class="pageSizeChange">
+    Page Size:
+    <select (change)="onPageSizeChanged()" id="page-size">
+    <option value="20" selected="">20</option>
+    <option value="100">100</option>
+    <option value="500">500</option>
+    <option value="1000">1000</option>
+    <option value="10000">10000</option>
+    </select>
+</div>
+
+<ng-template #urlCell let-row>
+    {{ row['Course Name'] }}
+    <button (click)="greet(row)">click</button>
+</ng-template>

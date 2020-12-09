@@ -1,5 +1,19 @@
-<mat-selection-list dense #semesters [(ngModel)]="selectedOptions" (ngModelChange)="onNgModelChange($event)">
-  <mat-list-option *ngFor="let semester of backend.semesters" [value]="semester.id">
-    {{semester.year}} {{semester.season}}
-  </mat-list-option>
-</mat-selection-list>
+<div>
+    <input
+        type="text"
+        (input)="onQuickFilterChanged()"
+        id="semesterSelectListFilter"
+        placeholder="Filter semesters"
+    />
+    <ag-grid-angular
+        id="semesterSelectListGrid"
+        class="ag-theme-balham"
+        [rowData]="rowData"
+        [columnDefs]="columnDefs"
+        [suppressRowClickSelection]="true"
+        [rowSelection]="rowSelection"
+        [defaultColDef]="defaultColDef"
+        (gridReady)="onGridReady($event)"
+        (selectionChanged)="onSelectionChanged($event)"
+    ></ag-grid-angular>
+</div>

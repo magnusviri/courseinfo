@@ -1,11 +1,20 @@
-<mat-selection-list dense #instructors [(ngModel)]="selectedOptions" (ngModelChange)="onNgModelChange($event)">
-  <mat-list-option *ngFor="let instructor of backend.instructors" [value]="instructor.name">
-  <span *ngIf="instructor.name.length > 22; then thenBlock else elseBlock"></span>
-  <ng-template #thenBlock>
-    <span matTooltip="{{instructor.name}}" matTooltipPosition="after">
-      {{instructor.name | truncate : 22}}
-    </span>
-  </ng-template>
-  <ng-template #elseBlock><span>{{instructor.name}}</span></ng-template>
-  </mat-list-option>
-</mat-selection-list>
+<div>
+    <input
+        type="text"
+        (input)="onQuickFilterChanged()"
+        id="instructorSelectListFilter"
+        placeholder="Filter instructors"
+    />
+    <ag-grid-angular
+        id="instructorSelectListGrid"
+        class="ag-theme-balham"
+        [rowData]="rowData"
+        [columnDefs]="columnDefs"
+        [suppressRowClickSelection]="true"
+        [rowSelection]="rowSelection"
+        [defaultColDef]="defaultColDef"
+        (gridReady)="onGridReady($event)"
+        (selectionChanged)="onSelectionChanged($event)"
+        [enableBrowserTooltips]="true"
+    ></ag-grid-angular>
+</div>

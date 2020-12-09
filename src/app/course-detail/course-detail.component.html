@@ -1,44 +1,71 @@
-<!-- https://student.apps.utah.edu/uofu/stu/ClassSchedules/main/1188/class_list.htmlsubject=BIOL -->
-<div id="details">
+<div id="detailsComponent">
 
-<ng-template [ngIf]="displayMessage">{{message}}</ng-template>
-<ng-template [ngIf]="!course">Select something</ng-template>
+<ng-template [ngIf]="welcomePage">
+        <h1>Biology Course Information DB</h1>
+
+        <p>Click a course name to view its details.</p>
+
+        <p>Data was last updaged on xxxx-xx-xx</p>
+
+        <p>Tips:</p>
+        <ul>
+            <li>Click the column header to sort.</li>
+            <li>To sort by multiple columns, hold shift when clicking on column headers</li>
+            <li>You can filter components by clicking the 3 lines.</li>
+        </ul>
+</ng-template>
+
+<ng-template [ngIf]="displayLoading">Loading...</ng-template>
+
 <ng-template [ngIf]="course">
-    <p><span class="col1">Catalog</span><span class="col2">{{course.cat}}</span></p>
-    <p><span class="col1">Semester</span><span class="col2">{{course.sem}}</span></p>
-    <p><span class="col1">Year</span><span class="col2">{{course.yea}}</span></p>
-    <p><span class="col1">Name</span><span class="col2">{{course.nam}}</span></p>
-    <p><span class="col1">Number</span><span class="col2">{{course.num}}</span></p>
-    <p><span class="col1">Instructors</span><span class="col2">{{course.ins}}</span></p>
+    <h1>BIOL {{course.cat}}-{{course.section}} - {{course.nam}}</h1>
+    <h1>{{course.semester}} {{course.yea}}</h1>
 
-    <p><span *ngFor="let instructor as course.ins" class="col2">
-            {{instructor[0]}}
-    </span></p>
+    <div id="detailsView">
+        <div class="col1">Instructors</div>
 
+        <div *ngFor="let instructor of course.instructors" class="col2">
+                <a target="_blank" rel="noopener" href="http://faculty.utah.edu/{{instructor.unid}}/teaching/index.hml">{{instructor.name}}</a>
+        </div>
 
-    <p><span class="col1">Gen Ed</span><span class="col2">{{course.gen}}</span></p>
-    <p><span class="col1">Component</span><span class="col2">{{course.com}}</span></p>
-    <p><span class="col1">Section</span><span class="col2">{{course.sec}}</span></p>
-    <p><span class="col1">Enrolled</span><span class="col2">{{course.enr}}</span></p>
-    <p><span class="col1">Capacity</span><span class="col2">{{course.cap}}</span></p>
-    <p><span class="col1">Description</span><span class="col2">{{course.des}}</span></p>
-    <p><span class="col1">ID</span><span class="col2">{{course.id}}</span></p>
-    <p><span class="col1">Requisites</span><span class="col2">{{course.rek}}</span></p>
-    <p><span class="col1">Requiments </span><span class="col2">{{course.req}}</span></p>
-    <p><span class="col1">Syllabus</span><span class="col2"><a href="{{course.syl}}">Syllabus</a></span></p>
-    <p><span class="col1">Type</span><span class="col2">{{course.typ}}</span></p>
-    <p><span class="col1">Unit</span><span class="col2">{{course.uni}}</span></p>
+        <div class="col1">Attributes</div>
+        <div *ngFor="let attr of course.attrs" class="col2">
+                {{attr.attr}}
+        </div>
 
-    <!-- 
-    <p>Fee course.fee</span></p>
+        <div class="col1">Component</div><div class="col2">{{course.com}}</div>
+        <div class="col1">Enrolled</div><div class="col2">{{course.enr}}</div>
+        <div class="col1">Capacity</div><div class="col2">{{course.cap}}</div>
+        <div class="col1">Requisites</div><div class="col2">{{course.rek}}</div>
+        <div class="col1">Requiments </div><div class="col2">{{course.req}}</div>
+        <div class="col1">Syllabus</div><div class="col2">
+            <div *ngIf="course.syl;else no_syllabus">
+                <a href="{{course.syl}}" target="_blank" rel="noopener">Syllabus</a>
+            </div>
+            <ng-template #no_syllabus>No syllabus</ng-template>
+        </div>
+        <div class="col1">Type</div><div class="col2">{{course.typ}}</div>
+        <div class="col1">Unit</div><div class="col2">{{course.uni}}</div>
+        <div class="col1">Catalog links</div><div class="col2">
+            <a href="https://student.apps.utah.edu/uofu/stu/ClassSchedules/main/{{course.semcode}}/class_list.html?subject=BIOL#{{course.num}}" target="_blank" rel="noopener">Class</a>
+            -
+            <a href="https://student.apps.utah.edu/uofu/stu/ClassSchedules/main/{{course.semcode}}/sections.html?subj=BIOL&catno={{course.cat}}" target="_blank" rel="noopener">Sections</a>
+            -
+            <a href="https://student.apps.utah.edu/uofu/stu/ClassSchedules/main/{{course.semcode}}/description.html?subj=BIOL&catno={{course.cat}}&section={{course.section}}" target="_blank" rel="noopener">Description</a>
+        </div>
+        <div class="col1">Description</div><div class="col2">{{course.des}}</div>
+
+    <!--
+    Fee course.fee</div>
     // field: 'Type' ,
     // field: 'Units' ,
     // field: 'Course Attributes' ,
     // field: 'Course Components' ,
-    // field: 'Wait List', type: 'nonEditableColumn' 
+    // field: 'Wait List', type: 'nonEditableColumn'
     // field: 'Description',
-    // field: 'Seats Available' 
+    // field: 'Seats Available'
     // field: 'Sections URL',
     -->
+    </div>
 </ng-template>
 </div>

@@ -2,7 +2,7 @@
 // https://medium.com/ag-grid/enhance-your-angular-grid-reports-with-formatted-values-and-links-34fa57ca2952
 
 import { Component, NgZone } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AgRendererComponent } from 'ag-grid-angular';
 
 @Component({
