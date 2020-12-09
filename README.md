@@ -6,7 +6,7 @@ To see it in action head to https://courseinfo.biology.utah.edu.
 
 ## Development
 
-To do development and build for production, you must install node first. If you have node, then proceed to install the app.
+To develop or build for production, you must install node first. If you have node, then proceed to install the app.
 
 ### Install node
 
