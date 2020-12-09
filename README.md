@@ -10,7 +10,7 @@ To develop or build for production, you must install node first. If you have nod
 
 ### Install node
 
-I use [nvm](https://github.com/nvm-sh/nvm/).
+I use [nvm](https://github.com/nvm-sh/nvm/) so that I can easily and quickly switch versions of node. I needed to do this because the courses-frontend depends on [angular2-jsonapi, which doesn't work with npm 7 right now](https://github.com/ghidoz/angular2-jsonapi/issues/278).
 
 	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.0/install.sh | bash
 	nvm install node
