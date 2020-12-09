@@ -4,31 +4,37 @@ This is a web frontend to display the data from [courses-backend](https://github
 
 To see it in action head to https://courseinfo.biology.utah.edu.
 
-## Installation
+## Development
 
-Set up a Linux server with apache, ssl, backup, firewall, and git.
+To do development and build for production, you must install node first. If you have node, then proceed to install the app.
 
 ### Install node
 
-nvm - get instructions from https://github.com/nvm-sh/nvm
+I use [nvm](https://github.com/nvm-sh/nvm/).
 
 	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.0/install.sh | bash
 	nvm install node
 	npm -v
 
-Show which versions can be installed
+Show which versions can be installed.
 
 	nvm list-remote
-	nvm install 10.9.0
+	nvm install v14.15.1
 
-## Development
+Show the current version.
+
+	nvm which current
+
+### Install the app
+
+Note, right now (December 2020) the [angular2-jsonapi library doesn't work with npm 7](https://github.com/ghidoz/angular2-jsonapi/issues/278). This is why I am installing node v14.15.1 above (which is npm 6). It's also why I'm using nvm to install node, because it makes it easy to switch versions of node.
 
 	git clone https://github.com/magnusviri/courses-frontend.git
 	cd courses-frontend
 	npm install
 	ng serve -o
 
-It will open in your web browser. This is configured to use the backend at https://courseinfo.biology.utah.edu/api. To change the backend, open src/app/datastore.service.ts and change the following line to point to whatever you want.
+Your web browser will open to the app. The app is configured to use the backend at https://courseinfo.biology.utah.edu/api. To change the backend, open src/app/datastore.service.ts and change the following line to point to whatever you want.
 
 >     baseUrl: 'https://courseinfo.biology.utah.edu/api',
 
@@ -36,8 +42,12 @@ If you aren't aware of [CORS](https://en.wikipedia.org/wiki/Cross-origin_resourc
 
 ## Production
 
+Angular production apps are simple webpages that have no other dependencies. They will run on any web server.
+
+Run this command on your development server to build the production files.
+
 	ng build --prod
 
-Look in dist/courses-frontend. Move it to a web server.
+Move the files in dist/courses-frontend to a web server.
 
-I'm sure you could put this on any web server. I host it inside of a [courses-backend](https://github.com/magnusviri/courses-backend), which is a Laravel app. The courses-backend readme explains how I do that.
+I host it inside of courses-backend, which is a Laravel app. The [courses-backend readme](https://github.com/magnusviri/courses-backend#user-content-installing-the-frontend) explains exactly where to put the files.
