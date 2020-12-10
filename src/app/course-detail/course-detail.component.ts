@@ -15,7 +15,7 @@ import { BrowserModule } from '@angular/platform-browser';
 export class CourseDetailComponent implements OnInit, OnDestroy {
   public course: any;
   displayLoading = false;
-  welcomePage = false;
+  displayError = false;
   capacity:number;
   private datastoreMessages: Subscription;
 
@@ -28,29 +28,29 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
       var course_number = Number(params.get('course_number'));
-      if (course_number == 0) {
-        this.welcomePage = true;
-      } else {
-        this.course = this.datastore.getCourse(course_number);
-        if (!this.course) {
-          this.displayLoading = true;
-          this.datastoreMessages = this.datastore.onMessage().subscribe(message => {
-            if (message) {
-              if (message.text == "courses_loaded") {
-                this.course = this.datastore.getCourse(course_number);
-                if (this.course) {
-                  this.datastoreMessages.unsubscribe();
-                  this.displayLoading = false;
-                }
-                console.log(this.course);
+      this.course = this.datastore.getCourse(course_number);
+      if (!this.course) {
+        this.displayError = false;
+        this.displayLoading = true;
+        this.datastoreMessages = this.datastore.onMessage().subscribe(message => {
+          if (message) {
+            if (message.text == "courses_loaded") {
+              this.course = this.datastore.getCourse(course_number);
+              if (this.course) {
+                this.datastoreMessages.unsubscribe();
+                this.displayLoading = false;
+              } else {
+                this.displayError = true;
+                this.displayLoading = false;
+                console.log("Could not find " + params.get('course_number'));
               }
             }
-          });
-        }
+          }
+        });
       }
     });
     this.router.events.subscribe(event => {
-      this.welcomePage = false;
+      this.displayError = false;
       if (event instanceof NavigationStart) {
         this.displayLoading = true;
       } else if (event instanceof NavigationEnd) {

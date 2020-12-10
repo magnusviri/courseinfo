@@ -3,11 +3,11 @@ import { Subscription } from 'rxjs';
 import { DatastoreService } from '../datastore.service';
 
 @Component({
-  selector: 'app-semester-select-list',
-  templateUrl: './semester-select-list.component.html',
-  styleUrls: ['./semester-select-list.component.scss']
+  selector: 'app-component-select-list',
+  templateUrl: './component-select-list.component.html',
+  styleUrls: ['./component-select-list.component.scss']
 })
-export class SemesterSelectListComponent implements OnInit, OnDestroy {
+export class ComponentSelectListComponent implements OnInit, OnDestroy {
   private gridApi;
   private gridColumnApi;
 
@@ -21,28 +21,13 @@ export class SemesterSelectListComponent implements OnInit, OnDestroy {
   constructor(public datastore: DatastoreService) {
     this.columnDefs = [
       {
-        field: "semcode",
-        headerName: "Semester",
+        field: "name",
+        headerName: "Component",
         headerCheckboxSelection: true,
         headerCheckboxSelectionFilteredOnly: true,
         sortable: true,
         sortingOrder: ['asc', 'desc'],
         checkboxSelection: true,
-        getQuickFilterText: function(params) {
-          return params.data.year+' '+params.data.season;
-        },
-        // cellRenderer: function(params) {
-        //   var value = `${params.data.year} ${params.data.season}`;
-        //   var catalog_link = `https://student.apps.utah.edu/uofu/stu/ClassSchedules/main/${params.value}/class_list.html?subject=BIOL"`;
-        //   value += ` <a href="${catalog_link}" target="_blank" rel="noopener"><img width="10" src="assets/external-link.svg"></a>`;
-        //   return value;
-        // }
-
-        valueFormatter: function(params) {
-          var value = `${params.data.year} ${params.data.season}`;
-          return value;
-        },
-
       },
     ];
     this.defaultColDef = {
@@ -52,7 +37,7 @@ export class SemesterSelectListComponent implements OnInit, OnDestroy {
   }
 
   onQuickFilterChanged() {
-    this.gridApi.setQuickFilter((<HTMLInputElement>document.getElementById('semesterSelectListFilter')).value);
+    this.gridApi.setQuickFilter((<HTMLInputElement>document.getElementById('componentSelectListFilter')).value);
   }
 
   onGridReady(params) {
@@ -61,17 +46,17 @@ export class SemesterSelectListComponent implements OnInit, OnDestroy {
     this.gridColumnApi.applyColumnState({
       state: [
         {
-          colId: 'semcode',
-          sort: 'desc',
+          colId: 'name',
+          sort: 'asc',
         },
       ],
       defaultState: { sort: null },
     });
-    if ( ! this.datastore.semesters ) {
+    if ( ! this.datastore.components ) {
       this.datastoreMessages = this.datastore.onMessage().subscribe(message => {
         if (message) {
           if (message.text == "courses_loaded") {
-            this.rowData = this.datastore.semesters;
+            this.rowData = this.datastore.components;
             this.gridApi.onFilterChanged();
           } else {
             this.gridApi.onFilterChanged();
@@ -79,17 +64,17 @@ export class SemesterSelectListComponent implements OnInit, OnDestroy {
         }
       });
     } else {
-      this.rowData = this.datastore.semesters;
+      this.rowData = this.datastore.components;
       this.gridApi.onFilterChanged();
     }
   }
 
   onSelectionChanged(event) {
-    this.datastore.semester_filter = event.api.getSelectedNodes().map(item => {
-      return item.data.semcode;
+    this.datastore.component_filter = event.api.getSelectedNodes().map(item => {
+      return item.data.name;
     });
-    console.log(this.datastore.semester_filter);
-    this.datastore.sendMessage('semester_filter_changed');
+    console.log(this.datastore.component_filter);
+    this.datastore.sendMessage('component_filter_changed');
   }
 
   ngOnInit(): void {

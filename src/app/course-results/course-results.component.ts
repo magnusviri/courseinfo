@@ -1,14 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DatastoreService } from '../datastore.service';
 import { Subscription } from 'rxjs';
-import { CellRouterLinkComponent } from '../cell-router-link/cell-router-link.component';
+import { CourseDetailLinkComponent } from '../course-detail-link/course-detail-link.component';
 
 @Component({
   selector: 'app-course-results',
   templateUrl: './course-results.component.html',
   styleUrls: ['./course-results.component.scss']
 })
-export class ResultsTableComponent implements OnInit, OnDestroy {
+export class CourseResultsComponent implements OnInit, OnDestroy {
   private gridApi;
   private gridColumnApi;
 
@@ -42,18 +42,19 @@ export class ResultsTableComponent implements OnInit, OnDestroy {
         headerName: 'Catalog',
         maxWidth: 120,
 //         filter: 'agNumberColumnFilter',
-        valueFormatter: function(params) {
-          return 'BIOL '+params.value;
-        },
+        // valueFormatter: function(params) {
+        //   return 'BIOL '+params.value;
+        // },
       },
       {
         field: 'nam',
         headerName: 'Name',
         maxWidth: 300,
-        cellRendererFramework: CellRouterLinkComponent,
+        cellRendererFramework: CourseDetailLinkComponent,
         cellRendererParams: {
           inRouterLink: '/course',
         },
+        tooltipField: 'nam',
       },
       {
         field: 'instructors',
@@ -64,6 +65,9 @@ export class ResultsTableComponent implements OnInit, OnDestroy {
             return element.name;
           });
           return names.join("; ");
+        },
+        tooltipValueGetter: function (params) {
+          return (params.valueFormatted);
         },
       },
       {
@@ -76,12 +80,16 @@ export class ResultsTableComponent implements OnInit, OnDestroy {
           });
           return names.join(" ");
         },
+        tooltipValueGetter: function (params) {
+          return (params.valueFormatted);
+        },
       },
       {
         field: 'com',
         headerName: 'Component',
         filter: 'agTextColumnFilter',
         maxWidth: 140,
+        tooltipField: 'com',
       },
       {
         field: 'sec',
@@ -133,6 +141,7 @@ export class ResultsTableComponent implements OnInit, OnDestroy {
     if (aggrid_datastore){
       var bla =
         aggrid_datastore.attr_filter.length +
+        aggrid_datastore.component_filter.length +
         aggrid_datastore.course_filter.length +
         aggrid_datastore.instructor_filter.length +
         aggrid_datastore.semester_filter.length;
@@ -156,6 +165,28 @@ export class ResultsTableComponent implements OnInit, OnDestroy {
       }
       pass = pass2;
     }
+    // Logical AND
+    if (pass && aggrid_datastore.component_filter.length > 0) {
+      pass = aggrid_datastore.component_filter.includes(node.data.com);
+    }
+    
+    // // Logical AND
+    // if (pass && aggrid_datastore.course_filter.length > 0) {
+    //   // Logical OR
+    //   let ii = 0;
+    //   let pass2 = false;
+    //   while (ii < aggrid_datastore.course_filter.length) {
+    //     pass2 = node.data.nam == aggrid_datastore.course_filter[ii][0] &&
+    //             node.data.cat == aggrid_datastore.course_filter[ii][1];
+    //     if (pass2) {
+    //       ii = aggrid_datastore.course_filter.length;
+    //     } else {
+    //       ii++;
+    //     }
+    //   }
+    //   pass = pass2;
+    // }
+
     // Logical AND
     if (pass && aggrid_datastore.course_filter.length > 0) {
       pass = aggrid_datastore.course_filter.includes(node.data.nam);
@@ -195,7 +226,6 @@ export class ResultsTableComponent implements OnInit, OnDestroy {
       defaultState: { sort: null },
     });
     this.paginationPageSize = 20;
-    // this.gridApi.sizeColumnsToFit();
     if ( ! this.datastore.courses ) {
       this.datastoreMessages = this.datastore.onMessage().subscribe(message => {
         if (message) {

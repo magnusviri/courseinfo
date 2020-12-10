@@ -1,10 +1,15 @@
 <input class="toggle" type="radio" name="theme" value="side" checked="checked"><span class="toggle">Side</span>
 <input class="toggle" type="radio" name="theme" value="top" ><span class="toggle">Top</span>
 <div id="grid">
-    <app-semester-select-list></app-semester-select-list>
-    <app-course-select-list></app-course-select-list>
-    <app-instructor-select-list></app-instructor-select-list>
-    <app-attr-select-list></app-attr-select-list>
+    <!-- <div id="filters">asdf -->
+        <app-semester-select-list></app-semester-select-list>
+        <app-course-select-list></app-course-select-list>
+        <app-instructor-select-list></app-instructor-select-list>
+        <app-attr-select-list></app-attr-select-list>
+        <app-component-select-list></app-component-select-list>
+    <!-- </div> -->
     <app-course-results></app-course-results>
-    <app-course-detail></app-course-detail>
+    <div class="detail-view">
+        <router-outlet></router-outlet>
+    </div>
 </div>

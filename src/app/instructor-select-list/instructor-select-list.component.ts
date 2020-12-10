@@ -29,12 +29,13 @@ export class InstructorSelectListComponent implements OnInit, OnDestroy {
         sortingOrder: ['asc', 'desc'],
         checkboxSelection: true,
         tooltipField: 'name',
-        cellRenderer: function(params) {
-          var value = params.value;
-          var link = `http://faculty.utah.edu/${params.data.unid}/teaching/index.hml/"`;
-          value += ` <a href="${link}" target="_blank" rel="noopener"><img width="10" src="assets/external-link.svg"></a>`;
-          return value;
-        }
+        // cellRenderer: function(params) {
+        //   var value = params.value;
+        //   var link = `http://faculty.utah.edu/${params.data.unid}/teaching/index.hml/"`;
+        //   value += ` <a href="${link}" target="_blank" rel="noopener"><img width="10" src="assets/external-link.svg"></a>`;
+        //   return value;
+        // }
+
 
       },
   //     { field: 'unid', sortable: true },
@@ -45,7 +46,6 @@ export class InstructorSelectListComponent implements OnInit, OnDestroy {
       flex: 1,
     };
     this.rowSelection = 'multiple';
-    this.suppressRowClickSelection = true;
   }
 
   onQuickFilterChanged() {

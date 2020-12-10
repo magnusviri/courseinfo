@@ -1,25 +1,12 @@
-<div id="detailsComponent">
+<div id="detailComponent">
 
-<ng-template [ngIf]="welcomePage">
-        <h1>Biology Course Information DB</h1>
-
-        <p>Click a course name to view its details.</p>
-
-        <p>Data was last updaged on xxxx-xx-xx</p>
-
-        <p>Tips:</p>
-        <ul>
-            <li>Click the column header to sort.</li>
-            <li>To sort by multiple columns, hold shift when clicking on column headers</li>
-            <li>You can filter components by clicking the 3 lines.</li>
-        </ul>
-</ng-template>
-
+<ng-template [ngIf]="displayError">Could not find course</ng-template>
 <ng-template [ngIf]="displayLoading">Loading...</ng-template>
 
 <ng-template [ngIf]="course">
-    <h1>BIOL {{course.cat}}-{{course.section}} - {{course.nam}}</h1>
-    <h1>{{course.semester}} {{course.yea}}</h1>
+    <h1>BIOL {{course.cat}}-{{course.section}}<br>
+        {{course.nam}}<br>
+        {{course.semester}} {{course.yea}}</h1>
 
     <div id="detailsView">
         <div class="col1">Instructors</div>

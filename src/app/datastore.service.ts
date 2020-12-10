@@ -6,7 +6,13 @@ import { Observable, Subject } from 'rxjs';
 import { Attr } from './models/attr';
 import { Course } from './models/course';
 import { Instructor } from './models/instructor';
-import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
+// import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
+
+export interface Component {
+  id: number;
+  name: string;
+  abr: string;
+}
 
 export interface Semester {
   id: number;
@@ -34,16 +40,19 @@ export class DatastoreService extends JsonApiDatastore {
   private subject = new Subject<any>();
 
   public attr_filter: [] = [];
+  public component_filter: [] = [];
   public course_filter: [] = [];
   public instructor_filter: [] = [];
   public semester_filter: [] = [];
-  public semesters: Semester[];
+
   public attrs: any[];
+  public components: Component[];
   public courses: any[];
+  public instructors: any[];
+  public semesters: Semester[];
+
   public course_by_num: any[] = [];
   public course_list: any[];
-  public found_courses: boolean[] = [];
-  public instructors: any[];
   public first_year: Number = Number.MAX_VALUE;
   public last_year: Number = 0;
 
@@ -100,6 +109,10 @@ export class DatastoreService extends JsonApiDatastore {
 
   makeCourseList() {
     this.course_list = [];
+    this.components = [];
+    let found_courses: boolean[] = [];
+    let found_components: boolean[] = [];
+
     this.courses.forEach((element, index) => {
       this.course_by_num[element['num']*10000+(element['yea']-1900)*10+element['sem']] = index;
 
@@ -117,11 +130,17 @@ export class DatastoreService extends JsonApiDatastore {
         element.section = "0"+element.sec;
       }
 
+      if (!(element['com'] in found_components)) {
+        found_components[element['com']] = true;
+        this.components.push({'id': this.components.length+1, 'name': element['com'], 'abr': ''});
+      }
+
       element.semcode = (element['yea']-1900)*10+element['sem'];
       this.buildSemcode(element['yea'], element['sem']);
-      if(!(element['cat']+element['nam'] in this.found_courses)) {
-        this.found_courses[element['cat']+element['nam']] = true;
-        this.course_list.push({'nam': element['nam'],'cat': element['cat']});
+
+      if (!(element['cat']+element['nam'] in found_courses)) {
+        found_courses[element['cat']+element['nam']] = true;
+        this.course_list.push({'nam': element['nam'], 'cat': element['cat']});
 
         if ( element['yea'] < this.first_year) {
           this.first_year = element['yea'];

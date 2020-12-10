@@ -42,7 +42,6 @@ export class AttrSelectListComponent implements OnInit, OnDestroy {
       flex: 1,
     };
     this.rowSelection = 'multiple';
-    this.suppressRowClickSelection = true;
   }
 
   onQuickFilterChanged() {

@@ -43,7 +43,6 @@ export class CourseSelectListComponent implements OnInit, OnDestroy {
       flex: 1,
     };
     this.rowSelection = 'multiple';
-    this.suppressRowClickSelection = true;
   }
 
   onQuickFilterChanged() {
@@ -81,6 +80,7 @@ export class CourseSelectListComponent implements OnInit, OnDestroy {
 
   onSelectionChanged(event) {
     this.datastore.course_filter = event.api.getSelectedNodes().map(item => {
+      // return [ item.data.nam, item.data.cat ];
       return item.data.nam;
     });
     this.datastore.sendMessage('course_filter_changed');

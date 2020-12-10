@@ -1,55 +1,27 @@
-$width1: 80px;
-$width2: 200px; // total 360
-
-#detailsComponent {
+#detailComponent {
     background-color:var(--ag-background-color, #FFF);
     height: 100%;
     padding: 10px;
     border: 1px solid var(--ag-border-color, #bdc3c7);;
 }
-
-#welcomeComponent {
-    width: 360px;;
-}
-p {
-    margin: 10px;
-}
-ul {
-    padding-inline-start: 40px;
-}
-
 h1 {
     align-items: center;
     font-size: medium;
 }
 #detailsView {
     display: grid;
-    grid-template-columns: $width1 $width2;
+    grid-template-columns: 30% auto;
     grid-gap: 10px;
     margin: 10px;
-    // background-color:var(--ag-row-hover-color);
-    // border
 }
-// #details > div {
-//     background-color: #ddd;
-//     color: black;
-//     padding: 10px;
-// }
-// p {
-//     display: flex;
-//     align-items: flex-start;
-//     height: 28px;
-// }
 .col1 {
     grid-column-start: 1;
-    // width: $width1;
     text-align: right;
-    // margin: 0 0 0 0;
-    // display: flex;
-    //   justify-content: center;
-    // align-items: center;
 }
 .col2 {
     grid-column-start: 2;
+}
+router-outlet + * {
+  background-color: red;
 
 }
