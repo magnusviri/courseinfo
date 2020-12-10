@@ -73,7 +73,6 @@ export class ComponentSelectListComponent implements OnInit, OnDestroy {
     this.datastore.component_filter = event.api.getSelectedNodes().map(item => {
       return item.data.name;
     });
-    console.log(this.datastore.component_filter);
     this.datastore.sendMessage('component_filter_changed');
   }
 
