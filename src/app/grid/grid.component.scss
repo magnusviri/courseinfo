@@ -1,61 +1,13 @@
-.toggle {
-    position: relative;
-    top: -27.5px;
-    left: 10px;
-    color: white;
-    padding: 5px;
-}
-// SIDE
-input[type=radio][value=side]:checked ~ #grid {
-    grid-template-columns: 260px auto 380px;
-    grid-template-rows: 18vh 18vh 18vh 18vh 18vh;
-    grid-template-areas:
-    "app-semester-select-list   app-course-results detail"
-    "app-course-select-list     app-course-results detail"
-    "app-instructor-select-list app-course-results detail"
-    "app-attr-select-list       app-course-results detail"
-    "app-component-select-list       app-course-results detail"
-}
-// TOP
-input[type=radio][value=top]:checked ~ #grid {
-    grid-template-columns: 20% 20% 20% 20% 20%;
-    grid-template-rows: 24vh 60vh;
-    grid-template-areas:
-    "app-semester-select-list   app-course-select-list app-instructor-select-list app-attr-select-list app-component-select-list"
-    "app-course-results         app-course-results     app-course-results         app-course-results   detail"
-}
 
 #grid {
-    display: grid;
-    // height: 100vh;
+    height: 84vh;
     width: 100%;
-    // background-color: #aaa;
 }
 #grid > * {
-    overflow: hidden;
     width: inherit;
     height: 100%;
-    border: 5px solid #fff;
+    border: 10px solid #eee;
 }
-
-app-semester-select-list {
-    grid-area: app-semester-select-list;
-}
-app-course-select-list {
-    grid-area: app-course-select-list;
-}
-app-instructor-select-list {
-    grid-area: app-instructor-select-list;
-}
-app-attr-select-list {
-    grid-area: app-attr-select-list;
-}
-app-component-select-list {
-    grid-area: app-component-select-list;
-}
-app-course-results {
-    grid-area: app-course-results;
-}
-.detail-view {
-    grid-area: detail;
+.add-border {
+    border: 1px solid var(--ag-border-color, #bdc3c7);
 }

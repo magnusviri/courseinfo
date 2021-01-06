@@ -14,13 +14,12 @@ import { Course } from './models/course';
 export class AppComponent {
   title = 'course info';
 
-
   constructor(private datastore: DatastoreService) {
 
     this.datastore.findAll(Instructor, {
     }).subscribe(
       (data: JsonApiQueryData<Instructor>) => {
-        this.datastore.instructors = data.getModels();
+        this.datastore.instructors_select_list = data.getModels();
       },
       (errorResponse) => {
        if (errorResponse instanceof ErrorResponse) {
@@ -32,7 +31,7 @@ export class AppComponent {
     this.datastore.findAll(Attr, {
     }).subscribe(
       (data: JsonApiQueryData<Attr>) => {
-        this.datastore.attrs = data.getModels();
+        this.datastore.attrs_select_list = data.getModels();
       },
       (errorResponse) => {
        if (errorResponse instanceof ErrorResponse) {
@@ -46,7 +45,6 @@ export class AppComponent {
     }).subscribe(
       (data: JsonApiQueryData<Course>) => {
         this.datastore.courses = data.getModels();
-        this.datastore.makeCourseList();
         this.datastore.sendMessage('courses_loaded');
       },
       (errorResponse) => {

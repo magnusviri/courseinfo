@@ -1,13 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { DatastoreService } from '../datastore.service';
 import { Subscription } from 'rxjs';
+import { DatastoreService } from '../datastore.service';
 
 @Component({
-  selector: 'app-instructor-select-list',
-  templateUrl: './instructor-select-list.component.html',
-  styleUrls: ['./instructor-select-list.component.scss']
+  selector: 'app-catalog-number-select-list',
+  templateUrl: './catalog-number-select-list.component.html',
+  styleUrls: ['./catalog-number-select-list.component.scss']
 })
-export class InstructorSelectListComponent implements OnInit, OnDestroy {
+export class CatalogNumberSelectListComponent implements OnInit, OnDestroy {
   private gridApi;
   private gridColumnApi;
   public rowClassRules;
@@ -23,26 +23,16 @@ export class InstructorSelectListComponent implements OnInit, OnDestroy {
   constructor(private datastore: DatastoreService) {
     this.columnDefs = [
       {
-        field: 'name',
-        headerName: "Instructor",
+        field: 'cat',
+        headerName: '#',
+        tooltipField: 'cat',
+        maxWidth: 90,
         headerCheckboxSelection: true,
         headerCheckboxSelectionFilteredOnly: true,
         sortable: true,
         sortingOrder: ['asc', 'desc'],
         checkboxSelection: true,
-        tooltipField: 'name',
-        // cellRenderer: function(params) {
-        //   var value = params.value;
-        //   var link = `http://faculty.utah.edu/${params.data.unid}/teaching/index.hml/"`;
-        //   value += ` <a href="${link}" target="_blank" rel="noopener"><img width="10" src="assets/external-link.svg"></a>`;
-        //   return value;
-        // }
-
-
       },
-  //     { field: 'unid', sortable: true },
-  //     { field: 'courses', sortable: true },
-  //     { field: 'id' },
     ];
     this.defaultColDef = {
       flex: 1,
@@ -63,7 +53,7 @@ export class InstructorSelectListComponent implements OnInit, OnDestroy {
   }
 
   onQuickFilterChanged() {
-    this.gridApi.setQuickFilter((<HTMLInputElement>document.getElementById('instructorSelectListFilter')).value);
+    this.gridApi.setQuickFilter((<HTMLInputElement>document.getElementById('catalogNumberSelectListFilter')).value);
   }
 
   onGridReady(params) {
@@ -72,18 +62,18 @@ export class InstructorSelectListComponent implements OnInit, OnDestroy {
     this.gridColumnApi.applyColumnState({
       state: [
         {
-          colId: 'name',
+          colId: 'cat',
           sort: 'asc',
         },
       ],
       defaultState: { sort: null },
     });
-    if ( ! this.datastore.courses ) {
+    if ( ! this.datastore.catalog_number_select_list ) {
       this.datastoreMessages = this.datastore.onMessage().subscribe(
         message => {this.onMessage(message)}
       );
     } else {
-      this.rowData = this.datastore.instructors_select_list;
+      this.rowData = this.datastore.catalog_number_select_list;
       this.gridApi.onFilterChanged();
     }
     this.rowClassRules = {
@@ -96,7 +86,7 @@ export class InstructorSelectListComponent implements OnInit, OnDestroy {
   onMessage(message) {
     if (message) {
       if (message.text == "courses_loaded") {
-        this.rowData = this.datastore.instructors_select_list;
+        this.rowData = this.datastore.catalog_number_select_list;
       } else if (message.text == "redraw_select_lists") {
         this.gridApi.onFilterChanged();
         this.gridApi.redrawRows();
@@ -105,8 +95,8 @@ export class InstructorSelectListComponent implements OnInit, OnDestroy {
   }
 
   onSelectionChanged(event) {
-    this.datastore.instructor_filter = event.api.getSelectedNodes().map(item => {
-      return item.data.unid;
+    this.datastore.catalog_number_filter = event.api.getSelectedNodes().map(item => {
+      return item.data.cat;
     });
     this.datastore.sendMessage('select_list_changed');
   }
@@ -119,5 +109,4 @@ export class InstructorSelectListComponent implements OnInit, OnDestroy {
       this.datastoreMessages.unsubscribe();
     }
   }
-
 }

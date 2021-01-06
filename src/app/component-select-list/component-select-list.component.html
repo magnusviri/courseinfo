@@ -8,12 +8,15 @@
     <ag-grid-angular
         id="componentSelectListGrid"
         class="ag-theme-balham"
-        [rowData]="rowData"
-        [columnDefs]="columnDefs"
-        [rowMultiSelectWithClick]="true"
-        [rowSelection]="rowSelection"
-        [defaultColDef]="defaultColDef"
         (gridReady)="onGridReady($event)"
         (selectionChanged)="onSelectionChanged($event)"
+        [columnDefs]="columnDefs"
+        [defaultColDef]="defaultColDef"
+        [enableBrowserTooltips]="true"
+        [postSort]="postSort"
+        [rowClassRules]="rowClassRules"
+        [rowData]="rowData"
+        [rowMultiSelectWithClick]="true"
+        [rowSelection]="rowSelection"
     ></ag-grid-angular>
 </div>

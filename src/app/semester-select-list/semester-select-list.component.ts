@@ -10,6 +10,8 @@ import { DatastoreService } from '../datastore.service';
 export class SemesterSelectListComponent implements OnInit, OnDestroy {
   private gridApi;
   private gridColumnApi;
+  public rowClassRules;
+  public postSort;
 
   columnDefs;
   defaultColDef;
@@ -49,6 +51,18 @@ export class SemesterSelectListComponent implements OnInit, OnDestroy {
       flex: 1,
     };
     this.rowSelection = 'multiple';
+    this.postSort = function (rowNodes) {
+      function move(toIndex, fromIndex) {
+        rowNodes.splice(toIndex, 0, rowNodes.splice(fromIndex, 1)[0]);
+      }
+      var nextInsertPos = 0;
+      for (var i = 0; i < rowNodes.length; i++) {
+        if (rowNodes[i].data.active) {
+          move(nextInsertPos, i);
+          nextInsertPos++;
+        }
+      }
+    };
   }
 
   onQuickFilterChanged() {
@@ -67,20 +81,29 @@ export class SemesterSelectListComponent implements OnInit, OnDestroy {
       ],
       defaultState: { sort: null },
     });
-    if ( ! this.datastore.semesters ) {
-      this.datastoreMessages = this.datastore.onMessage().subscribe(message => {
-        if (message) {
-          if (message.text == "courses_loaded") {
-            this.rowData = this.datastore.semesters;
-            this.gridApi.onFilterChanged();
-          } else {
-            this.gridApi.onFilterChanged();
-          }
-        }
-      });
+    if ( ! this.datastore.semesters_select_list ) {
+      this.datastoreMessages = this.datastore.onMessage().subscribe(
+        message => {this.onMessage(message)}
+      );
     } else {
-      this.rowData = this.datastore.semesters;
+      this.rowData = this.datastore.semesters_select_list;
       this.gridApi.onFilterChanged();
+    }
+    this.rowClassRules = {
+      "select-list-inactive-element": function (params) {
+        return !params.data.active;
+      },
+    };
+  }
+
+  onMessage(message) {
+    if (message) {
+      if (message.text == "courses_loaded") {
+        this.rowData = this.datastore.semesters_select_list;
+      } else if (message.text == "redraw_select_lists") {
+        this.gridApi.onFilterChanged();
+        this.gridApi.redrawRows();
+      }
     }
   }
 
@@ -88,8 +111,7 @@ export class SemesterSelectListComponent implements OnInit, OnDestroy {
     this.datastore.semester_filter = event.api.getSelectedNodes().map(item => {
       return item.data.semcode;
     });
-    console.log(this.datastore.semester_filter);
-    this.datastore.sendMessage('semester_filter_changed');
+    this.datastore.sendMessage('select_list_changed');
   }
 
   ngOnInit(): void {

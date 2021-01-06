@@ -33,12 +33,15 @@
         </div>
         <div class="col1">Type</div><div class="col2">{{course.typ}}</div>
         <div class="col1">Unit</div><div class="col2">{{course.uni}}</div>
-        <div class="col1">Catalog links</div><div class="col2">
+        <div class="col1">Other links</div><div class="col2">
             <a href="https://student.apps.utah.edu/uofu/stu/ClassSchedules/main/{{course.semcode}}/class_list.html?subject=BIOL#{{course.num}}" target="_blank" rel="noopener">Class</a>
             -
             <a href="https://student.apps.utah.edu/uofu/stu/ClassSchedules/main/{{course.semcode}}/sections.html?subj=BIOL&catno={{course.cat}}" target="_blank" rel="noopener">Sections</a>
             -
             <a href="https://student.apps.utah.edu/uofu/stu/ClassSchedules/main/{{course.semcode}}/description.html?subj=BIOL&catno={{course.cat}}&section={{course.section}}" target="_blank" rel="noopener">Description</a>
+            -
+            <a href="https://tableau.dashboard.utah.edu/#/site/idmv/views/CourseEnrollmentProfile/CourseEnrollment?:showAppBanner=false&Subject={{course.sub}}&Acadyr={{course.Acadyr}}&Semester={{course.semester}}&Extract=End-of-Term&Catlvl=2000-2999&Catnbr2={{course.cat}}&Section={{course.section}}" target="_blank" rel="noopener">More enrollment info</a>
+            
         </div>
         <div class="col1">Description</div><div class="col2">{{course.des}}</div>
 

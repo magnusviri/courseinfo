@@ -3,32 +3,30 @@
 @import "../node_modules/ag-grid-community/src/styles/ag-grid.scss";
 @import "../node_modules/ag-grid-community/src/styles/ag-theme-balham/sass/ag-theme-balham-mixin.scss";
 
-@import "https://templates.utah.edu/apps/v1/_css/main.css";
+// html, body, div, span, applet, object, iframe,
+// h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+// a, abbr, acronym, address, big, cite, code,
+// del, dfn, em, img, ins, kbd, q, s, samp,
+// small, strike, strong, sub, sup, tt, var,
+// b, u, i, center,
+// dl, dt, dd, ol, ul, li,
+// fieldset, form, label, legend,
+// table, caption, tbody, tfoot, thead, tr, th, td,
+// article, aside, canvas, details, embed,
+// figure, figcaption, footer, header, hgroup,
+// menu, nav, output, ruby, section, summary,
+// time, mark, audio, video {
+// 	margin: 0;
+// 	padding: 0;
+// 	border: 0;
+// 	font-size: 100%;
+// 	font: inherit;
+// 	vertical-align: baseline;
+// }
 
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
-}
-
-html, body { height: 100%; }
-body { font-family: "Helvetica Neue", sans-serif; }
-div, p { font-size: 12px }
+// html, body { height: 100%; }
+// body { font-family: "Helvetica Neue", sans-serif; }
+// div, p { font-size: 12px }
 
 html {
     -webkit-box-sizing: border-box;
@@ -43,7 +41,7 @@ html {
 
 .ag-theme-balham {
     @include ag-theme-balham((
-        odd-row-background-color: #CFD8DC
+        odd-row-background-color: #e8f0f3
     ));
 }
 .ag-header-cell-filtered {
@@ -56,4 +54,7 @@ html {
 
 .ag-theme-balham .ag-paging-panel {
     color: var(--ag-data-color, var(--ag-foreground-color, #000));
+}
+.select-list-inactive-element {
+    color: rgb(99, 99, 99) !important;
 }

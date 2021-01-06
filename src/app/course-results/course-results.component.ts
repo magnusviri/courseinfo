@@ -35,13 +35,11 @@ export class CourseResultsComponent implements OnInit, OnDestroy {
         field: 'yea',
         headerName: 'Year',
         maxWidth: 80,
-//         filter: 'agNumberColumnFilter',
       },
       {
         field: 'cat',
         headerName: 'Catalog',
         maxWidth: 120,
-//         filter: 'agNumberColumnFilter',
         // valueFormatter: function(params) {
         //   return 'BIOL '+params.value;
         // },
@@ -60,34 +58,49 @@ export class CourseResultsComponent implements OnInit, OnDestroy {
         field: 'instructors',
         headerName: 'Instructors',
         maxWidth: 300,
+        comparator: function(valueA, valueB, nodeA, nodeB, isInverted) {
+          let nameA = valueA.map(element => {
+            return element.name;
+          });
+          nameA = nameA.sort().join('; ');
+          let nameB = valueB.map(element => {
+            return element.name;
+          });
+          nameB = nameB.sort().join('; ');
+          if (nameA == nameB) {
+            return 0;
+          } else {
+            return (nameA>nameB) ? 1 : -1;
+          }
+        },
+
         valueFormatter: function(params) {
           let names = params.value.map(element => {
             return element.name;
           });
-          return names.join("; ");
+          return names.sort().join('; ');
         },
         tooltipValueGetter: function (params) {
           return (params.valueFormatted);
         },
       },
-      {
-        field: 'attrs',
-        headerName: 'Attributes',
-        maxWidth: 120,
-        valueFormatter: function(params) {
-          let names = params.value.map(element => {
-            return element.attr;
-          });
-          return names.join(" ");
-        },
-        tooltipValueGetter: function (params) {
-          return (params.valueFormatted);
-        },
-      },
+      // {
+      //   field: 'attrs',
+      //   headerName: 'Attributes',
+      //   maxWidth: 120,
+      //   valueFormatter: function(params) {
+      //     let names = params.value.map(element => {
+      //       return element.attr;
+      //     });
+      //     return names.sort().join(' ');
+      //   },
+      //   tooltipValueGetter: function (params) {
+      //     return (params.valueFormatted);
+      //   },
+      // },
       {
         field: 'com',
         headerName: 'Component',
-        filter: 'agTextColumnFilter',
         maxWidth: 140,
         tooltipField: 'com',
       },
@@ -100,7 +113,6 @@ export class CourseResultsComponent implements OnInit, OnDestroy {
         field: 'enr',
         headerName: 'Enrolled',
         maxWidth: 80,
-//         filter: 'agNumberColumnFilter',
         comparator: function(valueA, valueB) {
           if (valueA === null && valueA === null) {
             return 0;
@@ -118,7 +130,6 @@ export class CourseResultsComponent implements OnInit, OnDestroy {
         field: 'cap',
         headerName: 'Capacity',
         maxWidth: 80,
-        // filter: 'agNumberColumnFilter',
         comparator: function(valueA, valueB, nodeA, nodeB, isInverted) {
           return valueA - valueB;
         },
@@ -131,86 +142,22 @@ export class CourseResultsComponent implements OnInit, OnDestroy {
       sortable: true,
       // editable: true,
       resizable: true,
-      // floatingFilter: true,
-      // suppressMenu: true,
     };
     this.suppressRowClickSelection = true;
   }
 
   isExternalFilterPresent() {
     if (aggrid_datastore){
-      var bla =
-        aggrid_datastore.attr_filter.length +
-        aggrid_datastore.component_filter.length +
-        aggrid_datastore.course_filter.length +
-        aggrid_datastore.instructor_filter.length +
-        aggrid_datastore.semester_filter.length;
+      return aggrid_datastore.isFilterPresent();
     }
-    return bla > 0;
+    return false;
   }
 
   doesExternalFilterPass(node) {
-    var pass = true;
-    if (aggrid_datastore.attr_filter.length > 0) {
-      // Logical OR
-      let ii = 0;
-      let pass2 = false;
-      while (ii < node.data.attrs.length) {
-        pass2 = aggrid_datastore.attr_filter.includes(node.data.attrs[ii].attr);
-        if (pass2) {
-          ii = node.data.attrs.length;
-        } else {
-          ii++;
-        }
-      }
-      pass = pass2;
+    if (aggrid_datastore){
+      return aggrid_datastore.filterCourseResults(node);
     }
-    // Logical AND
-    if (pass && aggrid_datastore.component_filter.length > 0) {
-      pass = aggrid_datastore.component_filter.includes(node.data.com);
-    }
-    
-    // // Logical AND
-    // if (pass && aggrid_datastore.course_filter.length > 0) {
-    //   // Logical OR
-    //   let ii = 0;
-    //   let pass2 = false;
-    //   while (ii < aggrid_datastore.course_filter.length) {
-    //     pass2 = node.data.nam == aggrid_datastore.course_filter[ii][0] &&
-    //             node.data.cat == aggrid_datastore.course_filter[ii][1];
-    //     if (pass2) {
-    //       ii = aggrid_datastore.course_filter.length;
-    //     } else {
-    //       ii++;
-    //     }
-    //   }
-    //   pass = pass2;
-    // }
-
-    // Logical AND
-    if (pass && aggrid_datastore.course_filter.length > 0) {
-      pass = aggrid_datastore.course_filter.includes(node.data.nam);
-    }
-    // Logical AND
-    if (pass && aggrid_datastore.instructor_filter.length > 0) {
-      // Logical OR
-      let ii = 0;
-      let pass2 = false;
-      while (ii < node.data.instructors.length) {
-        pass2 = aggrid_datastore.instructor_filter.includes(node.data.instructors[ii].unid);
-        if (pass2) {
-          ii = node.data.instructors.length;
-        } else {
-          ii++;
-        }
-      }
-      pass = pass2;
-    }
-    // Logical AND
-    if (pass && aggrid_datastore.semester_filter.length > 0) {
-      pass = aggrid_datastore.semester_filter.includes(node.data.semcode);
-    }
-    return pass;
+    return true;
   }
 
   onGridReady(params) {
@@ -227,20 +174,57 @@ export class CourseResultsComponent implements OnInit, OnDestroy {
     });
     this.paginationPageSize = 20;
     if ( ! this.datastore.courses ) {
-      this.datastoreMessages = this.datastore.onMessage().subscribe(message => {
-        if (message) {
-          if (message.text == "courses_loaded") {
-            this.rowData = this.datastore.courses;
-            aggrid_datastore = this.datastore;
-            this.gridApi.onFilterChanged();
-          } else {
-            this.gridApi.onFilterChanged();
-          }
-        }
-      });
+      this.datastoreMessages = this.datastore.onMessage().subscribe(
+        message => {this.onMessage(message)}
+      );
     } else {
       this.rowData = this.datastore.courses;
       this.gridApi.onFilterChanged();
+    }
+  }
+
+  onMessage(message) {
+    if (message) {
+      if (message.text == 'courses_loaded') {
+        this.rowData = this.datastore.courses;
+        aggrid_datastore = this.datastore;
+        this.gridApi.onFilterChanged();
+      } else if (message.text == 'select_list_changed') {
+        this.gridApi.onFilterChanged();
+      }
+    }
+  }
+
+  onFilterChanged(event) {
+    // this is called after this.gridApi.onFilterChanged() is finished
+    if (this.isExternalFilterPresent()) {
+      let attr_filters: boolean[] = [];
+      let catalog_number_filters: boolean[] = [];
+      let component_filters: boolean[] = [];
+      let course_filters: boolean[] = [];
+      let semester_filters: boolean[] = [];
+      let instructor_filters: boolean[] = [];
+      this.gridApi.forEachNodeAfterFilter(function(rowNode, index) {
+        let attrs = rowNode.data.attrs.map(element => {
+          attr_filters[element.attr] = true;
+        });
+        catalog_number_filters[rowNode.data.cat] = true;
+        component_filters[rowNode.data.com] = true;
+        course_filters[rowNode.data.nam] = true;
+        let names = rowNode.data.instructors.map(element => {
+          instructor_filters[element.unid] = true;
+        });
+        semester_filters[rowNode.data.semcode] = true;
+      });
+      this.datastore.filterSelectList('attrs_select_list', 'attr', attr_filters);
+      this.datastore.filterSelectList('catalog_number_select_list', 'cat', catalog_number_filters);
+      this.datastore.filterSelectList('components_select_list', 'name', component_filters);
+      this.datastore.filterSelectList('course_select_list', 'nam', course_filters);
+      this.datastore.filterSelectList('instructors_select_list', 'unid', instructor_filters);
+      this.datastore.filterSelectList('semesters_select_list', 'semcode', semester_filters);
+      this.datastore.sendMessage('redraw_select_lists');
+    } else {
+      this.datastore.filterSelectListTrue();
     }
   }
 

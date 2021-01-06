@@ -1,16 +1,17 @@
 <ag-grid-angular
     id="resultsGrid"
     class="ag-theme-balham"
-    [rowData]="rowData"
-    [columnDefs]="columnDefs"
-    [suppressRowClickSelection]="true"
-    [defaultColDef]="defaultColDef"
+    (filterChanged)="onFilterChanged($event)"
     (gridReady)="onGridReady($event)"
-    pagination="true"
-    [paginationPageSize]="paginationPageSize"
-    [isExternalFilterPresent]="isExternalFilterPresent"
+    [columnDefs]="columnDefs"
+    [defaultColDef]="defaultColDef"
     [doesExternalFilterPass]="doesExternalFilterPass"
     [enableBrowserTooltips]="true"
+    [isExternalFilterPresent]="isExternalFilterPresent"
+    [paginationPageSize]="paginationPageSize"
+    [rowData]="rowData"
+    [suppressRowClickSelection]="true"
+    pagination="true"
 ></ag-grid-angular>
 
 <div class="pageSizeChange">

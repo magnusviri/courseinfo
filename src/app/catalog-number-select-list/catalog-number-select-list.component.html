@@ -2,16 +2,17 @@
     <input
         type="text"
         (input)="onQuickFilterChanged()"
-        id="semesterSelectListFilter"
-        placeholder="Filter semesters"
+        id="catalogNumberSelectListFilter"
+        placeholder="Filter catalog numbers"
     />
     <ag-grid-angular
-        id="semesterSelectListGrid"
+        id="catalogNumberSelectListGrid"
         class="ag-theme-balham"
         (gridReady)="onGridReady($event)"
         (selectionChanged)="onSelectionChanged($event)"
         [columnDefs]="columnDefs"
         [defaultColDef]="defaultColDef"
+        [enableBrowserTooltips]="true"
         [postSort]="postSort"
         [rowClassRules]="rowClassRules"
         [rowData]="rowData"

@@ -1,15 +1,39 @@
-<input class="toggle" type="radio" name="theme" value="side" checked="checked"><span class="toggle">Side</span>
-<input class="toggle" type="radio" name="theme" value="top" ><span class="toggle">Top</span>
 <div id="grid">
-    <!-- <div id="filters">asdf -->
-        <app-semester-select-list></app-semester-select-list>
-        <app-course-select-list></app-course-select-list>
-        <app-instructor-select-list></app-instructor-select-list>
-        <app-attr-select-list></app-attr-select-list>
-        <app-component-select-list></app-component-select-list>
-    <!-- </div> -->
-    <app-course-results></app-course-results>
-    <div class="detail-view">
-        <router-outlet></router-outlet>
-    </div>
+    <as-split direction="vertical">
+        <as-split-area [size]="80">
+
+            <as-split direction="horizontal">
+                <as-split-area [size]="70">
+                    <app-course-results></app-course-results>
+                </as-split-area>
+                <as-split-area [size]="30" class="add-border">
+                    <router-outlet></router-outlet>
+                </as-split-area>
+            </as-split>
+        </as-split-area>
+        <as-split-area [size]="20">
+
+            <as-split direction="horizontal">
+                <as-split-area [size]="18">
+                    <app-semester-select-list></app-semester-select-list>
+                </as-split-area>
+                <as-split-area [size]="10">
+                    <app-catalog-number-select-list></app-catalog-number-select-list>
+                </as-split-area>
+                <as-split-area [size]="18">
+                    <app-course-select-list></app-course-select-list>
+                </as-split-area>
+                <as-split-area [size]="18">
+                    <app-instructor-select-list></app-instructor-select-list>
+                </as-split-area>
+                <as-split-area [size]="18">
+                    <app-attr-select-list></app-attr-select-list>
+                </as-split-area>
+                <as-split-area [size]="18">
+                    <app-component-select-list></app-component-select-list>
+                </as-split-area>
+
+            </as-split>
+        </as-split-area>
+    </as-split>
 </div>
