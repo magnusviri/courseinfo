@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CookieService } from 'ngx-cookie';
 import { DatastoreService } from '../datastore.service';
 import { Subscription } from 'rxjs';
 import { CourseDetailLinkComponent } from '../course-detail-link/course-detail-link.component';
@@ -19,7 +20,7 @@ export class CourseResultsComponent implements OnInit, OnDestroy {
   public paginationPageSize;
   private datastoreMessages: Subscription;
 
-  constructor(private datastore: DatastoreService) {
+  constructor(private datastore: DatastoreService, private cookieService: CookieService) {
     this.columnDefs = [
       {
         field: 'sem',
@@ -172,7 +173,7 @@ export class CourseResultsComponent implements OnInit, OnDestroy {
       ],
       defaultState: { sort: null },
     });
-    this.paginationPageSize = 20;
+    this.paginationPageSize = this.cookieService.get("courseResultsPaginationPageSize") || 20;
     if ( ! this.datastore.courses ) {
       this.datastoreMessages = this.datastore.onMessage().subscribe(
         message => {this.onMessage(message)}
@@ -231,6 +232,7 @@ export class CourseResultsComponent implements OnInit, OnDestroy {
   onPageSizeChanged() {
     var value = (<HTMLInputElement>document.getElementById('page-size')).value;
     this.gridApi.paginationSetPageSize(Number(value));
+    this.cookieService.put("courseResultsPaginationPageSize", value);
   }
 
   ngOnInit(): void {

@@ -26,7 +26,6 @@ export class CatalogNumberSelectListComponent implements OnInit, OnDestroy {
         field: 'cat',
         headerName: '#',
         tooltipField: 'cat',
-        maxWidth: 90,
         headerCheckboxSelection: true,
         headerCheckboxSelectionFilteredOnly: true,
         sortable: true,

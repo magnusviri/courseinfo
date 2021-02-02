@@ -1,11 +1,13 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { AppRoutingModule, routingComponents } from './app-routing.module';
-import { JsonApiModule } from 'angular2-jsonapi';
-import { AgGridModule } from 'ag-grid-angular';
 import { FormsModule } from '@angular/forms';
-import { AngularSplitModule } from 'angular-split';
+import { NgModule } from '@angular/core';
 
+import { AgGridModule } from 'ag-grid-angular';
+import { AngularSplitModule } from 'angular-split';
+import { CookieModule } from 'ngx-cookie';
+import { JsonApiModule } from 'angular2-jsonapi';
+
+import { AppRoutingModule, routingComponents } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
@@ -45,6 +47,7 @@ import { SemesterSelectListComponent } from './semester-select-list/semester-sel
     AngularSplitModule,
     AppRoutingModule,
     BrowserModule,
+    CookieModule.forRoot(),
     FormsModule,
     JsonApiModule,
   ],

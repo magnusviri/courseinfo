@@ -23,6 +23,7 @@
     "ag-grid-community": "^24.1.0",
     "angular-split": "^5.0.0",
     "angular2-jsonapi": "^8.2.1",
+    "ngx-cookie": "^5.0.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"
