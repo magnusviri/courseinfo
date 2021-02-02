@@ -10,21 +10,38 @@
 
     <div id="detailsView">
         <div class="col1">Instructors</div>
-
-        <div *ngFor="let instructor of course.instructors" class="col2">
+        <ng-template [ngIf]="course.instructors.length > 0">
+            <div *ngFor="let instructor of course.instructors.sort()" class="col2">
                 <a target="_blank" rel="noopener" href="http://faculty.utah.edu/{{instructor.unid}}/teaching/index.hml">{{instructor.name}}</a>
-        </div>
+            </div>
+        </ng-template>
+        <ng-template [ngIf]="course.instructors.length == 0">No instructor</ng-template>
 
-        <div class="col1">Attributes</div>
-        <div *ngFor="let attr of course.attrs" class="col2">
-                {{attr.attr}}
-        </div>
+        <ng-template [ngIf]="course.attrs.length > 0">
+            <div class="col1">Attributes</div>
+            <div class="col2">
+                <!-- names.sort().join('; '); -->
+                <span *ngFor="let attr of course.attrs.sort()">
+                        {{attr.attr}}
+                </span>
+            </div>
+        </ng-template>
 
         <div class="col1">Component</div><div class="col2">{{course.com}}</div>
-        <div class="col1">Enrolled</div><div class="col2">{{course.enr}}</div>
-        <div class="col1">Capacity</div><div class="col2">{{course.cap}}</div>
-        <div class="col1">Requisites</div><div class="col2">{{course.rek}}</div>
-        <div class="col1">Requiments </div><div class="col2">{{course.req}}</div>
+        <ng-template [ngIf]="course.cap">
+            <div class="col1">Capacity</div><div class="col2">{{course.cap}}</div>
+        </ng-template>
+        <ng-template [ngIf]="course.enr">
+            <div class="col1">Enrolled</div><div class="col2">{{course.enr}}</div>
+        </ng-template>
+
+        <ng-template [ngIf]="course.wai == 'Yes'">
+	        <div class="col1">Waiting List</div><div class="col2">{{course.wai}}</div>
+        </ng-template>
+
+        <ng-template [ngIf]="course.req">
+            <div class="col1">Requirements</div><div class="col2">{{course.req}}</div>
+        </ng-template>
         <div class="col1">Syllabus</div><div class="col2">
             <div *ngIf="course.syl;else no_syllabus">
                 <a href="{{course.syl}}" target="_blank" rel="noopener">Syllabus</a>
@@ -33,6 +50,31 @@
         </div>
         <div class="col1">Type</div><div class="col2">{{course.typ}}</div>
         <div class="col1">Unit</div><div class="col2">{{course.uni}}</div>
+
+        <ng-template [ngIf]="course.meets_with && course.meets_with.length > 0">
+            <div class="col1">Meets With</div>
+            <div *ngFor="let meets_with of course.meets_with" class="col2">
+                {{meets_with.cat}} {{meets_with.num}}-{{meets_with.sec}}
+            </div>
+        </ng-template>
+
+        <ng-template [ngIf]="course.when_where && course.when_where.length > 0">
+            <div class="col1">Location and Time</div>
+            <div *ngFor="let when_where of course.when_where" class="col2">
+                <ng-template [ngIf]="when_where.tba">
+                    {{when_where.tba}}
+                </ng-template>
+                <ng-template [ngIf]="!when_where.tba">
+                    {{when_where.day}} {{when_where.tim}}, {{when_where.loc}}
+                </ng-template>
+            </div>
+        </ng-template>
+
+        <div class="col1">Description</div><div class="col2">{{course.description.des}}</div>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
         <div class="col1">Other links</div><div class="col2">
             <a href="https://student.apps.utah.edu/uofu/stu/ClassSchedules/main/{{course.semcode}}/class_list.html?subject=BIOL#{{course.num}}" target="_blank" rel="noopener">Class</a>
             -
@@ -41,21 +83,7 @@
             <a href="https://student.apps.utah.edu/uofu/stu/ClassSchedules/main/{{course.semcode}}/description.html?subj=BIOL&catno={{course.cat}}&section={{course.sec}}" target="_blank" rel="noopener">Description</a>
             -
             <a href="https://tableau.dashboard.utah.edu/#/site/idmv/views/CourseEnrollmentProfile/CourseEnrollment?:showAppBanner=false&Subject={{course.sub}}&Acadyr={{course.Acadyr}}&Semester={{course.semester}}&Extract=End-of-Term&Catlvl=2000-2999&Catnbr2={{course.cat}}&Section={{course.sec}}" target="_blank" rel="noopener">More enrollment info</a>
-
         </div>
-        <div class="col1">Description</div><div class="col2">{{course.description.des}}</div>
-
-    <!--
-    Fee course.fee</div>
-    // field: 'Type' ,
-    // field: 'Units' ,
-    // field: 'Course Attributes' ,
-    // field: 'Course Components' ,
-    // field: 'Wait List', type: 'nonEditableColumn'
-    // field: 'Description',
-    // field: 'Seats Available'
-    // field: 'Sections URL',
-    -->
     </div>
 </ng-template>
 </div>

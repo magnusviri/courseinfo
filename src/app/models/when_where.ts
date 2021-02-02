@@ -15,6 +15,9 @@ export class WhenWhere extends JsonApiModel {
     @Attribute()
     loc: string;
 
+    @Attribute()
+    tba: string;
+
     @HasMany()
     courses: Course[];
 

@@ -15,9 +15,6 @@ export class MeetsWith extends JsonApiModel {
     @Attribute()
     sec: string;
 
-    @Attribute()
-    tba: string;
-
     @HasMany()
     courses: Course[];
 
