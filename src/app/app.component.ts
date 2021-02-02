@@ -5,6 +5,10 @@ import { JsonApiQueryData, ErrorResponse } from 'angular2-jsonapi';
 import { Instructor } from './models/instructor';
 import { Attr } from './models/attr';
 import { Course } from './models/course';
+import { Description } from './models/description';
+import { MeetsWith } from './models/meets_with';
+import { Special } from './models/special';
+import { WhenWhere } from './models/when_where';
 
 @Component({
   selector: 'app-root',
@@ -41,7 +45,7 @@ export class AppComponent {
     });
 
     this.datastore.findAll(Course, {
-      include: 'attrs,instructors'
+      include: 'attrs,description,instructors,meets_with,special,when_where'
     }).subscribe(
       (data: JsonApiQueryData<Course>) => {
         this.datastore.courses = data.getModels();

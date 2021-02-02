@@ -5,7 +5,12 @@ import { Observable, Subject } from 'rxjs';
 
 import { Attr } from './models/attr';
 import { Course } from './models/course';
+import { Description } from './models/description';
 import { Instructor } from './models/instructor';
+import { MeetsWith } from './models/meets_with';
+import { Special } from './models/special';
+import { WhenWhere } from './models/when_where';
+
 // import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
 
 export interface Component {
@@ -29,7 +34,11 @@ const config: DatastoreConfig = {
   models: {
     attrs: Attr,
     courses: Course,
-    instructors: Instructor
+    descriptions: Description,
+    instructors: Instructor,
+    meets_with: MeetsWith,
+    specials: Special,
+    when_where: WhenWhere
   }
 }
 
@@ -232,11 +241,6 @@ export class DatastoreService extends JsonApiDatastore {
         element['Acadyr'] = (element['yea']-1)+"-"+element['yea'];
       }
 
-      if (element.sec < 10) {
-        element.section = "00"+element.sec;
-      } else if (element.sec < 100) {
-        element.section = "0"+element.sec;
-      }
       element.semester = this.seasons_map[element.sem];
       element.semcode = this.buildSemcode(element['yea'], element['sem'])
     });

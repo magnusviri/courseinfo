@@ -1,6 +1,10 @@
 import { JsonApiModelConfig, JsonApiModel, Attribute, HasMany, BelongsTo } from 'angular2-jsonapi';
 import { Attr } from './attr';
+import { Description } from './description';
 import { Instructor } from './instructor';
+import { MeetsWith } from './meets_with';
+import { Special } from './special';
+import { WhenWhere } from './when_where';
 
 @JsonApiModelConfig({
     type: 'courses'
@@ -8,31 +12,49 @@ import { Instructor } from './instructor';
 export class Course extends JsonApiModel {
 
     @Attribute()
-    cat: number;
+    cap: number;
 
     @Attribute()
-    sec: number;
+    cat: number;
 
     @Attribute()
     com: string;
 
     @Attribute()
-    sub: string;
+    enr: number;
 
     @Attribute()
-    num: number;
+    fee: string;
 
     @Attribute()
     nam: string;
 
     @Attribute()
-    enr: number;
+    num: number;
 
     @Attribute()
-    des: string;
+    rek: string;
 
     @Attribute()
-    cap: number;
+    req: string;
+
+    @Attribute()
+    sea: string;
+
+    @Attribute()
+    sec: number;
+
+    @Attribute()
+    sem: number;
+
+    @Attribute()
+    sub: string;
+
+    @Attribute()
+    syl: string;
+
+    @Attribute()
+    tba: string;
 
     @Attribute()
     typ: string;
@@ -41,24 +63,27 @@ export class Course extends JsonApiModel {
     uni: string;
 
     @Attribute()
+    wai: string;
+
+    @Attribute()
     yea: number;
-
-    @Attribute()
-    sem: number;
-
-    @Attribute()
-    fee: string;
-
-    @Attribute()
-    rek: string;
-
-    @Attribute()
-    syl: string;
 
     @HasMany()
     attrs: Attr[];
 
+    @BelongsTo()
+    description: Description[];
+
     @HasMany()
     instructors: Instructor[];
+
+    @HasMany()
+    meets_with: MeetsWith[];
+
+    @BelongsTo()
+    special: Special[];
+
+    @HasMany()
+    when_where: WhenWhere[];
 
 }

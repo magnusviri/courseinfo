@@ -55,7 +55,7 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
         this.displayLoading = true;
       } else if (event instanceof NavigationEnd) {
         if (this.course) {
-        this.displayLoading = false;
+          this.displayLoading = false;
         }
       }
     });
