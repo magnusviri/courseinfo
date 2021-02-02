@@ -54,9 +54,6 @@ export class Course extends JsonApiModel {
     syl: string;
 
     @Attribute()
-    tba: string;
-
-    @Attribute()
     typ: string;
 
     @Attribute()

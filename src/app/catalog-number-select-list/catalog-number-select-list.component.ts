@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { CookieService } from 'ngx-cookie';
 import { DatastoreService } from '../datastore.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-catalog-number-select-list',
@@ -12,6 +13,7 @@ export class CatalogNumberSelectListComponent implements OnInit, OnDestroy {
   private gridColumnApi;
   public rowClassRules;
   public postSort;
+  public catalogNumberSelectListFilter = "";
 
   columnDefs;
   defaultColDef;
@@ -20,7 +22,7 @@ export class CatalogNumberSelectListComponent implements OnInit, OnDestroy {
   rowData: any[];
   private datastoreMessages: Subscription;
 
-  constructor(private datastore: DatastoreService) {
+  constructor(private datastore: DatastoreService, private cookieService: CookieService) {
     this.columnDefs = [
       {
         field: 'cat',
@@ -52,7 +54,9 @@ export class CatalogNumberSelectListComponent implements OnInit, OnDestroy {
   }
 
   onQuickFilterChanged() {
-    this.gridApi.setQuickFilter((<HTMLInputElement>document.getElementById('catalogNumberSelectListFilter')).value);
+    let value = (<HTMLInputElement>document.getElementById('catalogNumberSelectListFilter')).value;
+    this.gridApi.setQuickFilter(value);
+    this.cookieService.put("catalogNumberSelectListFilter", value);
   }
 
   onGridReady(params) {
@@ -85,6 +89,8 @@ export class CatalogNumberSelectListComponent implements OnInit, OnDestroy {
   onMessage(message) {
     if (message) {
       if (message.text == "courses_loaded") {
+        this.catalogNumberSelectListFilter = this.cookieService.get("catalogNumberSelectListFilter") || "";
+        this.gridApi.setQuickFilter(this.catalogNumberSelectListFilter);
         this.rowData = this.datastore.catalog_number_select_list;
       } else if (message.text == "redraw_select_lists") {
         this.gridApi.onFilterChanged();

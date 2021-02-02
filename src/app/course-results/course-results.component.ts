@@ -206,13 +206,13 @@ export class CourseResultsComponent implements OnInit, OnDestroy {
       let semester_filters: boolean[] = [];
       let instructor_filters: boolean[] = [];
       this.gridApi.forEachNodeAfterFilter(function(rowNode, index) {
-        let attrs = rowNode.data.attrs.map(element => {
+        rowNode.data.attrs.map(element => {
           attr_filters[element.attr] = true;
         });
         catalog_number_filters[rowNode.data.cat] = true;
         component_filters[rowNode.data.com] = true;
         course_filters[rowNode.data.nam] = true;
-        let names = rowNode.data.instructors.map(element => {
+        rowNode.data.instructors.map(element => {
           instructor_filters[element.unid] = true;
         });
         semester_filters[rowNode.data.semcode] = true;

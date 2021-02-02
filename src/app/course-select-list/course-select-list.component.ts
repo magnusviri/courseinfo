@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { CookieService } from 'ngx-cookie';
 import { DatastoreService } from '../datastore.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-course-select-list',
@@ -12,6 +13,7 @@ export class CourseSelectListComponent implements OnInit, OnDestroy {
   private gridColumnApi;
   public rowClassRules;
   public postSort;
+  public courseSelectListFilter = "";
 
   columnDefs;
   defaultColDef;
@@ -20,7 +22,7 @@ export class CourseSelectListComponent implements OnInit, OnDestroy {
   rowData: any[];
   private datastoreMessages: Subscription;
 
-  constructor(private datastore: DatastoreService) {
+  constructor(private datastore: DatastoreService, private cookieService: CookieService) {
     this.columnDefs = [
       {
         field: 'nam',
@@ -52,7 +54,9 @@ export class CourseSelectListComponent implements OnInit, OnDestroy {
   }
 
   onQuickFilterChanged() {
-    this.gridApi.setQuickFilter((<HTMLInputElement>document.getElementById('courseSelectListFilter')).value);
+    let value = (<HTMLInputElement>document.getElementById('courseSelectListFilter')).value;
+    this.gridApi.setQuickFilter(value);
+    this.cookieService.put("courseSelectListFilter", value);
   }
 
   onGridReady(params) {
@@ -85,6 +89,8 @@ export class CourseSelectListComponent implements OnInit, OnDestroy {
   onMessage(message) {
     if (message) {
       if (message.text == "courses_loaded") {
+        this.courseSelectListFilter = this.cookieService.get("courseSelectListFilter") || "";
+        this.gridApi.setQuickFilter(this.courseSelectListFilter);
         this.rowData = this.datastore.course_select_list;
       } else if (message.text == "redraw_select_lists") {
         this.gridApi.onFilterChanged();
@@ -108,5 +114,4 @@ export class CourseSelectListComponent implements OnInit, OnDestroy {
       this.datastoreMessages.unsubscribe();
     }
   }
-
 }

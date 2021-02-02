@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { CookieService } from 'ngx-cookie';
 import { DatastoreService } from '../datastore.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-component-select-list',
@@ -12,6 +13,7 @@ export class ComponentSelectListComponent implements OnInit, OnDestroy {
   private gridColumnApi;
   public rowClassRules;
   public postSort;
+  public componentSelectListFilter = "";
 
   columnDefs;
   defaultColDef;
@@ -20,7 +22,7 @@ export class ComponentSelectListComponent implements OnInit, OnDestroy {
   rowData: any[];
   private datastoreMessages: Subscription;
 
-  constructor(private datastore: DatastoreService) {
+  constructor(private datastore: DatastoreService, private cookieService: CookieService) {
     this.columnDefs = [
       {
         field: 'name',
@@ -51,7 +53,9 @@ export class ComponentSelectListComponent implements OnInit, OnDestroy {
   }
 
   onQuickFilterChanged() {
-    this.gridApi.setQuickFilter((<HTMLInputElement>document.getElementById('componentSelectListFilter')).value);
+    let value = (<HTMLInputElement>document.getElementById('componentSelectListFilter')).value;
+    this.gridApi.setQuickFilter(value);
+    this.cookieService.put("componentSelectListFilter", value);
   }
 
   onGridReady(params) {
@@ -75,7 +79,7 @@ export class ComponentSelectListComponent implements OnInit, OnDestroy {
       this.gridApi.onFilterChanged();
     }
     this.rowClassRules = {
-      'select-list-inactive-element': function (params) {
+      "select-list-inactive-element": function (params) {
         return !params.data.active;
       },
     };
@@ -83,9 +87,11 @@ export class ComponentSelectListComponent implements OnInit, OnDestroy {
 
   onMessage(message) {
     if (message) {
-      if (message.text == 'courses_loaded') {
+      if (message.text == "courses_loaded") {
+        this.componentSelectListFilter = this.cookieService.get("componentSelectListFilter") || "";
+        this.gridApi.setQuickFilter(this.componentSelectListFilter);
         this.rowData = this.datastore.components_select_list;
-      } else if (message.text == 'redraw_select_lists') {
+      } else if (message.text == "redraw_select_lists") {
         this.gridApi.onFilterChanged();
         this.gridApi.redrawRows();
       }

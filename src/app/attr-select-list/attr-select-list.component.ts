@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CookieService } from 'ngx-cookie';
 import { DatastoreService } from '../datastore.service';
 import { Subscription } from 'rxjs';
 
@@ -12,6 +13,7 @@ export class AttrSelectListComponent implements OnInit, OnDestroy {
   private gridColumnApi;
   public rowClassRules;
   public postSort;
+  public attrSelectListFilter = "";
 
   columnDefs;
   defaultColDef;
@@ -20,7 +22,7 @@ export class AttrSelectListComponent implements OnInit, OnDestroy {
   rowData: any[];
   private datastoreMessages: Subscription;
 
-  constructor(private datastore: DatastoreService) {
+  constructor(private datastore: DatastoreService, private cookieService: CookieService) {
     this.columnDefs = [
       {
         field: 'attr',
@@ -59,7 +61,9 @@ export class AttrSelectListComponent implements OnInit, OnDestroy {
   }
 
   onQuickFilterChanged() {
-    this.gridApi.setQuickFilter((<HTMLInputElement>document.getElementById('attrSelectListFilter')).value);
+    let value = (<HTMLInputElement>document.getElementById('attrSelectListFilter')).value;
+    this.gridApi.setQuickFilter(value);
+    this.cookieService.put("attrSelectListFilter", value);
   }
 
   onGridReady(params) {
@@ -92,6 +96,8 @@ export class AttrSelectListComponent implements OnInit, OnDestroy {
   onMessage(message) {
     if (message) {
       if (message.text == "courses_loaded") {
+        this.attrSelectListFilter = this.cookieService.get("attrSelectListFilter") || "";
+        this.gridApi.setQuickFilter(this.attrSelectListFilter);
         this.rowData = this.datastore.attrs_select_list;
       } else if (message.text == "redraw_select_lists") {
         this.gridApi.onFilterChanged();
@@ -109,7 +115,6 @@ export class AttrSelectListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
   }
-
 
   ngOnDestroy() {
     if (this.datastoreMessages && !this.datastoreMessages.closed) {
