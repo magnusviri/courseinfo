@@ -16,7 +16,7 @@ import { GridComponent } from './grid/grid.component';
 
 import { AttrSelectListComponent } from './attr-select-list/attr-select-list.component';
 import { CatalogNumberSelectListComponent } from './catalog-number-select-list/catalog-number-select-list.component';
-import { ComponentSelectListComponent } from './component-select-list/component-select-list.component';
+import { ClassTypeSelectListComponent } from './class-type-select-list/class-type-select-list.component';
 import { CourseDetailLinkComponent } from './course-detail-link/course-detail-link.component';
 import { CourseResultsComponent } from './course-results/course-results.component';
 import { CourseSelectListComponent } from './course-select-list/course-select-list.component';
@@ -35,7 +35,7 @@ import { SemesterSelectListComponent } from './semester-select-list/semester-sel
 
     AttrSelectListComponent,
     CatalogNumberSelectListComponent,
-    ComponentSelectListComponent,
+    ClassTypeSelectListComponent,
     CourseDetailLinkComponent,
     CourseResultsComponent,
     CourseSelectListComponent,

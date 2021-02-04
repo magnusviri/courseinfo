@@ -13,7 +13,7 @@ import { WhenWhere } from './models/when_where';
 
 // import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
 
-export interface Component {
+export interface ClassType {
   // id: number;
   name: string;
   // abr: string;
@@ -52,14 +52,14 @@ export class DatastoreService extends JsonApiDatastore {
 
   public attr_filter: string[] = [];
   public catalog_number_filter: string[] = [];
-  public component_filter: string[] = [];
+  public class_type_filter: string[] = [];
   public course_filter: string[] = [];
   public instructor_filter: string[] = [];
   public semester_filter: string[] = [];
 
   public attrs_select_list: any[];
   public catalog_number_select_list: any[];
-  public components_select_list: Component[];
+  public class_types_select_list: ClassType[];
   public course_select_list: any[];
   public instructors_select_list: any[];
   public semesters_select_list: Semester[];
@@ -100,7 +100,7 @@ export class DatastoreService extends JsonApiDatastore {
   isFilterPresent() {
     var bla =
       this.attr_filter.length +
-      this.component_filter.length +
+      this.class_type_filter.length +
       this.course_filter.length +
       this.catalog_number_filter.length +
       this.instructor_filter.length +
@@ -125,8 +125,8 @@ export class DatastoreService extends JsonApiDatastore {
       pass = pass2;
     }
     // Logical AND
-    if (pass && this.component_filter.length > 0) {
-      pass = this.component_filter.includes(node.data.com);
+    if (pass && this.class_type_filter.length > 0) {
+      pass = this.class_type_filter.includes(node.data.com);
     }
 
     // Logical AND
@@ -172,7 +172,7 @@ export class DatastoreService extends JsonApiDatastore {
     for (var element2 of this.catalog_number_select_list) {
       element2.active = true;
     }
-    for (var element3 of this.components_select_list) {
+    for (var element3 of this.class_types_select_list) {
       element3.active = true;
     }
     for (var element4 of this.course_select_list) {
@@ -190,10 +190,10 @@ export class DatastoreService extends JsonApiDatastore {
   makeCourseList() {
     this.course_select_list = [];
     this.catalog_number_select_list = [];
-    this.components_select_list = [];
+    this.class_types_select_list = [];
     let found_courses: boolean[] = [];
     let found_catalog_numbers: boolean[] = [];
-    let found_components: boolean[] = [];
+    let found_class_types: boolean[] = [];
 
     let first_year: number = Number.MAX_VALUE;
     let last_year: number = 0;
@@ -202,9 +202,9 @@ export class DatastoreService extends JsonApiDatastore {
     this.courses.forEach((element, index) => {
       this.course_by_num[element['num']*10000+(element['yea']-1900)*10+element['sem']] = index;
 
-      if (!(element['com'] in found_components)) {
-        found_components[element['com']] = true;
-        this.components_select_list.push({
+      if (!(element['com'] in found_class_types)) {
+        found_class_types[element['com']] = true;
+        this.class_types_select_list.push({
           name: element['com'],
           // abr: '',
           active: true,

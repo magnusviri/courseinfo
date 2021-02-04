@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { BrowserModule } from '@angular/platform-browser';
 
 import { DatastoreService } from '../datastore.service';
 import { ActivatedRoute, NavigationStart, NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-
-import { CommonModule } from '@angular/common';
-import { BrowserModule } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-course-detail',
@@ -18,6 +17,7 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
   displayError = false;
   capacity:number;
   private datastoreMessages: Subscription;
+  public lastUpdated;
 
   constructor(
     private route: ActivatedRoute,
@@ -38,7 +38,7 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
               this.course = this.datastore.getCourse(course_number);
               if (this.course) {
                 this.datastoreMessages.unsubscribe();
-                this.displayLoading = false;
+                this.courseLoaded();
               } else {
                 this.displayError = true;
                 this.displayLoading = false;
@@ -55,11 +55,16 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
         this.displayLoading = true;
       } else if (event instanceof NavigationEnd) {
         if (this.course) {
-          this.displayLoading = false;
+          this.courseLoaded();
         }
       }
     });
 
+  }
+
+  courseLoaded() {
+    this.displayLoading = false;
+    this.lastUpdated = new Date(this.course.updatedAt);
   }
 
   ngOnDestroy() {

@@ -122,6 +122,3 @@ export class AttrSelectListComponent implements OnInit, OnDestroy {
     }
   }
 }
-
-// https://catalog.utah.edu/#/programs/HkpBsMW6z?bc=true&bcCurrent=Bachelor%20Degree%20Program&bcItemType=programs
-// https://catalog.utah.edu/#/programs/HkpBsMW6z?bc=true&bcCurrent=General%20Education%20Program&bcItemType=programs

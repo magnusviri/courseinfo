@@ -12,3 +12,30 @@ p {
 ul {
     padding-inline-start: 40px;
 }
+
+
+
+#detailComponent {
+    background-color:var(--ag-background-color, #fff);
+    height: 100%;
+    padding: 10px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    font-size: 12px;
+}
+h1 {
+    align-items: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    font-size: 20px;
+}
+h2 {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    font-size: 16px;
+    text-transform: none;
+}
+#detailsView {
+    margin: 10px;
+}
+router-outlet + * {
+  background-color: red;
+
+}

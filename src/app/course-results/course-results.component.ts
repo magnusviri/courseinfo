@@ -38,12 +38,14 @@ export class CourseResultsComponent implements OnInit, OnDestroy {
         maxWidth: 80,
       },
       {
+        field: 'sub',
+        headerName: 'Subject',
+        maxWidth: 120,
+      },
+      {
         field: 'cat',
         headerName: 'Catalog',
         maxWidth: 120,
-        // valueFormatter: function(params) {
-        //   return 'BIOL '+params.value;
-        // },
       },
       {
         field: 'nam',
@@ -101,7 +103,7 @@ export class CourseResultsComponent implements OnInit, OnDestroy {
       // },
       {
         field: 'com',
-        headerName: 'Component',
+        headerName: 'Class Type',
         maxWidth: 140,
         tooltipField: 'com',
       },
@@ -201,7 +203,7 @@ export class CourseResultsComponent implements OnInit, OnDestroy {
     if (this.isExternalFilterPresent()) {
       let attr_filters: boolean[] = [];
       let catalog_number_filters: boolean[] = [];
-      let component_filters: boolean[] = [];
+      let class_type_filters: boolean[] = [];
       let course_filters: boolean[] = [];
       let semester_filters: boolean[] = [];
       let instructor_filters: boolean[] = [];
@@ -210,7 +212,7 @@ export class CourseResultsComponent implements OnInit, OnDestroy {
           attr_filters[element.attr] = true;
         });
         catalog_number_filters[rowNode.data.cat] = true;
-        component_filters[rowNode.data.com] = true;
+        class_type_filters[rowNode.data.com] = true;
         course_filters[rowNode.data.nam] = true;
         rowNode.data.instructors.map(element => {
           instructor_filters[element.unid] = true;
@@ -219,7 +221,7 @@ export class CourseResultsComponent implements OnInit, OnDestroy {
       });
       this.datastore.filterSelectList('attrs_select_list', 'attr', attr_filters);
       this.datastore.filterSelectList('catalog_number_select_list', 'cat', catalog_number_filters);
-      this.datastore.filterSelectList('components_select_list', 'name', component_filters);
+      this.datastore.filterSelectList('class_types_select_list', 'name', class_type_filters);
       this.datastore.filterSelectList('course_select_list', 'nam', course_filters);
       this.datastore.filterSelectList('instructors_select_list', 'unid', instructor_filters);
       this.datastore.filterSelectList('semesters_select_list', 'semcode', semester_filters);

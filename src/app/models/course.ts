@@ -32,14 +32,14 @@ export class Course extends JsonApiModel {
     @Attribute()
     num: number;
 
-    @Attribute()
-    rek: string;
+    // @Attribute()
+    // rek: string;
 
     @Attribute()
     req: string;
 
-    @Attribute()
-    sea: string;
+    // @Attribute()
+    // sea: string;
 
     @Attribute()
     sec: number;
@@ -60,7 +60,10 @@ export class Course extends JsonApiModel {
     uni: string;
 
     @Attribute()
-    wai: string;
+    updatedAt: string;
+
+    @Attribute()
+    wai: number;
 
     @Attribute()
     yea: number;

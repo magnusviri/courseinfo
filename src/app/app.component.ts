@@ -16,7 +16,6 @@ import { WhenWhere } from './models/when_where';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'course info';
 
   constructor(private datastore: DatastoreService) {
 
