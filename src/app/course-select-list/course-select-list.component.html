@@ -2,9 +2,9 @@
     <input
         type="text"
         (input)="onQuickFilterChanged()"
-        id="courseSelectListFilter"
+        id="courseQuickFilter"
         placeholder="Filter courses"
-        [value]="courseSelectListFilter"
+        [value]="quickFilter"
     />
     <ag-grid-angular
         id="courseSelectListGrid"

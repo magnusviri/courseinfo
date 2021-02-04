@@ -22,7 +22,7 @@ export class AppComponent {
     this.datastore.findAll(Instructor, {
     }).subscribe(
       (data: JsonApiQueryData<Instructor>) => {
-        this.datastore.instructors_select_list = data.getModels();
+        this.datastore.instructor_select_list = data.getModels();
       },
       (errorResponse) => {
        if (errorResponse instanceof ErrorResponse) {
@@ -34,7 +34,7 @@ export class AppComponent {
     this.datastore.findAll(Attr, {
     }).subscribe(
       (data: JsonApiQueryData<Attr>) => {
-        this.datastore.attrs_select_list = data.getModels();
+        this.datastore.attr_select_list = data.getModels();
       },
       (errorResponse) => {
        if (errorResponse instanceof ErrorResponse) {

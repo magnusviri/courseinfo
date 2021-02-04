@@ -219,12 +219,12 @@ export class CourseResultsComponent implements OnInit, OnDestroy {
         });
         semester_filters[rowNode.data.semcode] = true;
       });
-      this.datastore.filterSelectList('attrs_select_list', 'attr', attr_filters);
+      this.datastore.filterSelectList('attr_select_list', 'attr', attr_filters);
       this.datastore.filterSelectList('catalog_number_select_list', 'cat', catalog_number_filters);
-      this.datastore.filterSelectList('class_types_select_list', 'name', class_type_filters);
+      this.datastore.filterSelectList('class_type_select_list', 'name', class_type_filters);
       this.datastore.filterSelectList('course_select_list', 'nam', course_filters);
-      this.datastore.filterSelectList('instructors_select_list', 'unid', instructor_filters);
-      this.datastore.filterSelectList('semesters_select_list', 'semcode', semester_filters);
+      this.datastore.filterSelectList('instructor_select_list', 'unid', instructor_filters);
+      this.datastore.filterSelectList('semester_select_list', 'semcode', semester_filters);
       this.datastore.sendMessage('redraw_select_lists');
     } else {
       this.datastore.filterSelectListTrue();

@@ -57,12 +57,12 @@ export class DatastoreService extends JsonApiDatastore {
   public instructor_filter: string[] = [];
   public semester_filter: string[] = [];
 
-  public attrs_select_list: any[];
+  public attr_select_list: any[];
   public catalog_number_select_list: any[];
-  public class_types_select_list: ClassType[];
+  public class_type_select_list: ClassType[];
   public course_select_list: any[];
-  public instructors_select_list: any[];
-  public semesters_select_list: Semester[];
+  public instructor_select_list: any[];
+  public semester_select_list: Semester[];
 
   public courses: any[];
   public course_by_num: any[] = [];
@@ -166,22 +166,22 @@ export class DatastoreService extends JsonApiDatastore {
   }
 
   filterSelectListTrue() {
-    for (var element1 of this.attrs_select_list) {
+    for (var element1 of this.attr_select_list) {
       element1.active = true;
     }
     for (var element2 of this.catalog_number_select_list) {
       element2.active = true;
     }
-    for (var element3 of this.class_types_select_list) {
+    for (var element3 of this.class_type_select_list) {
       element3.active = true;
     }
     for (var element4 of this.course_select_list) {
       element4.active = true;
     }
-    for (var element5 of this.instructors_select_list) {
+    for (var element5 of this.instructor_select_list) {
       element5.active = true;
     }
-    for (var element6 of this.semesters_select_list) {
+    for (var element6 of this.semester_select_list) {
       element6.active = true;
     }
     this.sendMessage('redraw_select_lists');
@@ -190,7 +190,7 @@ export class DatastoreService extends JsonApiDatastore {
   makeCourseList() {
     this.course_select_list = [];
     this.catalog_number_select_list = [];
-    this.class_types_select_list = [];
+    this.class_type_select_list = [];
     let found_courses: boolean[] = [];
     let found_catalog_numbers: boolean[] = [];
     let found_class_types: boolean[] = [];
@@ -204,7 +204,7 @@ export class DatastoreService extends JsonApiDatastore {
 
       if (!(element['com'] in found_class_types)) {
         found_class_types[element['com']] = true;
-        this.class_types_select_list.push({
+        this.class_type_select_list.push({
           name: element['com'],
           // abr: '',
           active: true,
@@ -235,24 +235,22 @@ export class DatastoreService extends JsonApiDatastore {
         last_season = element['sem'];
       }
 
-      if ( element['sem'] == 8 ) {
-        element['Acadyr'] = (element['yea']-2)+"-"+(element['yea']-1);
-      } else {
-        element['Acadyr'] = (element['yea']-1)+"-"+element['yea'];
-      }
-
       element.semester = this.seasons_map[element.sem];
       element.semcode = this.buildSemcode(element['yea'], element['sem'])
     });
     this.buildSemesterSelectList(first_year, last_year, last_season);
   }
 
+  clearAllFilters() {
+    this.sendMessage('clear_quick_filter');
+  }
+
   buildSemesterSelectList(first_year: number, last_year: number, last_season: number) {
     let id = 0;
-    this.semesters_select_list = [];
+    this.semester_select_list = [];
     let season_num: number =last_season;
     while (season_num >= 4 ) {
-      this.semesters_select_list.push({
+      this.semester_select_list.push({
         id: id,
         year:last_year,
         season: this.seasons_map[season_num],
@@ -264,7 +262,7 @@ export class DatastoreService extends JsonApiDatastore {
     }
     for (var year of this.reverse_range((last_year-1),first_year)) {
       for (var season of [8, 6, 4]) {
-        this.semesters_select_list.push({
+        this.semester_select_list.push({
           id: id,
           year:year,
           season: this.seasons_map[season],

@@ -1,28 +1,27 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CookieService } from 'ngx-cookie';
 import { DatastoreService } from '../datastore.service';
-import { Subscription } from 'rxjs';
+import { SelectListComponent } from '../select-list/select-list.component';
 
 @Component({
   selector: 'app-class-type-select-list',
   templateUrl: './class-type-select-list.component.html',
   styleUrls: ['./class-type-select-list.component.scss']
 })
-export class ClassTypeSelectListComponent implements OnInit, OnDestroy {
-  private gridApi;
-  private gridColumnApi;
-  public rowClassRules;
-  public postSort;
-  public classTypeSelectListFilter = "";
+export class ClassTypeSelectListComponent extends SelectListComponent implements OnInit {
+  // Overrides
+  public quickFilterName = 'classTypeQuickFilter';
+  public cookieFilterName = 'classTypeFilter';
+  public datastoreSelectList = 'class_type_select_list';
+  public datastoreFilter = 'class_type_filter';
+  public columnState = {
+    colId: 'name',
+    sort: 'asc',
+  };
+  public someName = 'name';
 
-  columnDefs;
-  defaultColDef;
-  rowSelection;
-  suppressRowClickSelection;
-  rowData: any[];
-  private datastoreMessages: Subscription;
-
-  constructor(private datastore: DatastoreService, private cookieService: CookieService) {
+  constructor(datastore: DatastoreService, cookieService: CookieService) {
+    super(datastore, cookieService);
     this.columnDefs = [
       {
         field: 'name',
@@ -52,65 +51,7 @@ export class ClassTypeSelectListComponent implements OnInit, OnDestroy {
     };
   }
 
-  onQuickFilterChanged() {
-    let value = (<HTMLInputElement>document.getElementById('classTypeSelectListFilter')).value;
-    this.gridApi.setQuickFilter(value);
-    this.cookieService.put("classTypeSelectListFilter", value);
-  }
-
-  onGridReady(params) {
-    this.gridApi = params.api;
-    this.gridColumnApi = params.columnApi;
-    this.gridColumnApi.applyColumnState({
-      state: [
-        {
-          colId: 'name',
-          sort: 'asc',
-        },
-      ],
-      defaultState: { sort: null },
-    });
-    if ( ! this.datastore.class_types_select_list ) {
-      this.datastoreMessages = this.datastore.onMessage().subscribe(
-        message => {this.onMessage(message)}
-      );
-    } else {
-      this.rowData = this.datastore.class_types_select_list;
-      this.gridApi.onFilterChanged();
-    }
-    this.rowClassRules = {
-      "select-list-inactive-element": function (params) {
-        return !params.data.active;
-      },
-    };
-  }
-
-  onMessage(message) {
-    if (message) {
-      if (message.text == "courses_loaded") {
-        this.classTypeSelectListFilter = this.cookieService.get("classTypeSelectListFilter") || "";
-        this.gridApi.setQuickFilter(this.classTypeSelectListFilter);
-        this.rowData = this.datastore.class_types_select_list;
-      } else if (message.text == "redraw_select_lists") {
-        this.gridApi.onFilterChanged();
-        this.gridApi.redrawRows();
-      }
-    }
-  }
-
-  onSelectionChanged(event) {
-    this.datastore.class_type_filter = event.api.getSelectedNodes().map(item => {
-      return item.data.name;
-    });
-    this.datastore.sendMessage('select_list_changed');
-  }
-
   ngOnInit(): void {
   }
 
-  ngOnDestroy() {
-    if (this.datastoreMessages && !this.datastoreMessages.closed) {
-      this.datastoreMessages.unsubscribe();
-    }
-  }
 }

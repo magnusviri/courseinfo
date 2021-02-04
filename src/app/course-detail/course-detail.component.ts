@@ -18,6 +18,7 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
   capacity:number;
   private datastoreMessages: Subscription;
   public lastUpdated;
+  public acadyr;
 
   constructor(
     private route: ActivatedRoute,
@@ -65,6 +66,11 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
   courseLoaded() {
     this.displayLoading = false;
     this.lastUpdated = new Date(this.course.updatedAt);
+    if ( this.course.sem == 8 ) {
+      this.acadyr = (this.course.yea-2)+"-"+(this.course.yea-1);
+    } else {
+      this.acadyr = (this.course.yea-1)+"-"+this.course.yea;
+    }
   }
 
   ngOnDestroy() {

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DatastoreService } from '../datastore.service';
 
 @Component({
   selector: 'app-welcome',
@@ -7,9 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class WelcomeComponent implements OnInit {
 
-  constructor() { }
+  constructor(private datastore: DatastoreService) {}
 
   ngOnInit(): void {
   }
 
+  clearAllFilters() {
+    this.datastore.clearAllFilters();
+  }
 }

@@ -2,9 +2,9 @@
     <input
         type="text"
         (input)="onQuickFilterChanged()"
-        id="catalogNumberSelectListFilter"
+        id="catalogNumberQuickFilter"
         placeholder="Filter catalog numbers"
-        [value]="catalogNumberSelectListFilter"
+        [value]="quickFilter"
     />
     <ag-grid-angular
         id="catalogNumberSelectListGrid"

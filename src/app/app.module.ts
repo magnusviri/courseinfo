@@ -22,6 +22,7 @@ import { CourseResultsComponent } from './course-results/course-results.componen
 import { CourseSelectListComponent } from './course-select-list/course-select-list.component';
 import { InstructorSelectListComponent } from './instructor-select-list/instructor-select-list.component';
 import { SemesterSelectListComponent } from './semester-select-list/semester-select-list.component';
+import { SelectListComponent } from './select-list/select-list.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { SemesterSelectListComponent } from './semester-select-list/semester-sel
     CourseSelectListComponent,
     InstructorSelectListComponent,
     SemesterSelectListComponent,
+    SelectListComponent,
   ],
   imports: [
     AgGridModule,
