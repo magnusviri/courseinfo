@@ -4,16 +4,16 @@ import { DatastoreService } from '../datastore.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-component-select-list',
-  templateUrl: './component-select-list.component.html',
-  styleUrls: ['./component-select-list.component.scss']
+  selector: 'app-class-type-select-list',
+  templateUrl: './class-type-select-list.component.html',
+  styleUrls: ['./class-type-select-list.component.scss']
 })
-export class ComponentSelectListComponent implements OnInit, OnDestroy {
+export class ClassTypeSelectListComponent implements OnInit, OnDestroy {
   private gridApi;
   private gridColumnApi;
   public rowClassRules;
   public postSort;
-  public componentSelectListFilter = "";
+  public classTypeSelectListFilter = "";
 
   columnDefs;
   defaultColDef;
@@ -26,7 +26,7 @@ export class ComponentSelectListComponent implements OnInit, OnDestroy {
     this.columnDefs = [
       {
         field: 'name',
-        headerName: 'Component',
+        headerName: 'Class Type',
         headerCheckboxSelection: true,
         headerCheckboxSelectionFilteredOnly: true,
         sortable: true,
@@ -53,9 +53,9 @@ export class ComponentSelectListComponent implements OnInit, OnDestroy {
   }
 
   onQuickFilterChanged() {
-    let value = (<HTMLInputElement>document.getElementById('componentSelectListFilter')).value;
+    let value = (<HTMLInputElement>document.getElementById('classTypeSelectListFilter')).value;
     this.gridApi.setQuickFilter(value);
-    this.cookieService.put("componentSelectListFilter", value);
+    this.cookieService.put("classTypeSelectListFilter", value);
   }
 
   onGridReady(params) {
@@ -70,12 +70,12 @@ export class ComponentSelectListComponent implements OnInit, OnDestroy {
       ],
       defaultState: { sort: null },
     });
-    if ( ! this.datastore.components_select_list ) {
+    if ( ! this.datastore.class_types_select_list ) {
       this.datastoreMessages = this.datastore.onMessage().subscribe(
         message => {this.onMessage(message)}
       );
     } else {
-      this.rowData = this.datastore.components_select_list;
+      this.rowData = this.datastore.class_types_select_list;
       this.gridApi.onFilterChanged();
     }
     this.rowClassRules = {
@@ -88,9 +88,9 @@ export class ComponentSelectListComponent implements OnInit, OnDestroy {
   onMessage(message) {
     if (message) {
       if (message.text == "courses_loaded") {
-        this.componentSelectListFilter = this.cookieService.get("componentSelectListFilter") || "";
-        this.gridApi.setQuickFilter(this.componentSelectListFilter);
-        this.rowData = this.datastore.components_select_list;
+        this.classTypeSelectListFilter = this.cookieService.get("classTypeSelectListFilter") || "";
+        this.gridApi.setQuickFilter(this.classTypeSelectListFilter);
+        this.rowData = this.datastore.class_types_select_list;
       } else if (message.text == "redraw_select_lists") {
         this.gridApi.onFilterChanged();
         this.gridApi.redrawRows();
@@ -99,7 +99,7 @@ export class ComponentSelectListComponent implements OnInit, OnDestroy {
   }
 
   onSelectionChanged(event) {
-    this.datastore.component_filter = event.api.getSelectedNodes().map(item => {
+    this.datastore.class_type_filter = event.api.getSelectedNodes().map(item => {
       return item.data.name;
     });
     this.datastore.sendMessage('select_list_changed');

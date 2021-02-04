@@ -2,12 +2,12 @@
     <input
         type="text"
         (input)="onQuickFilterChanged()"
-        id="componentSelectListFilter"
-        placeholder="Filter components"
-        [value]="componentSelectListFilter"
+        id="classTypeSelectListFilter"
+        placeholder="Filter class types"
+        [value]="classTypeSelectListFilter"
     />
     <ag-grid-angular
-        id="componentSelectListGrid"
+        id="classTypeSelectListGrid"
         class="ag-theme-balham"
         (gridReady)="onGridReady($event)"
         (selectionChanged)="onSelectionChanged($event)"
