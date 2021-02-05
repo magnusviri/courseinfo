@@ -11,7 +11,6 @@ import { SelectListComponent } from '../select-list/select-list.component';
 export class SemesterSelectListComponent extends SelectListComponent implements OnInit {
   // Overrides
   public quickFilterName = 'semesterQuickFilter';
-  public cookieFilterName = 'semesterFilter';
   public datastoreSelectList = 'semester_select_list';
   public datastoreFilter = 'semester_filter';
   public columnState = {

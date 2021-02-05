@@ -11,7 +11,6 @@ import { SelectListComponent } from '../select-list/select-list.component';
 export class InstructorSelectListComponent extends SelectListComponent implements OnInit {
   // Overrides
   public quickFilterName = 'instructorQuickFilter';
-  public cookieFilterName = 'instructorFilter';
   public datastoreSelectList = 'instructor_select_list';
   public datastoreFilter = 'instructor_filter';
   public columnState = {

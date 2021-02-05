@@ -201,33 +201,9 @@ export class CourseResultsComponent implements OnInit, OnDestroy {
   onFilterChanged(event) {
     // this is called after this.gridApi.onFilterChanged() is finished
     if (this.isExternalFilterPresent()) {
-      let attr_filters: boolean[] = [];
-      let catalog_number_filters: boolean[] = [];
-      let class_type_filters: boolean[] = [];
-      let course_filters: boolean[] = [];
-      let semester_filters: boolean[] = [];
-      let instructor_filters: boolean[] = [];
-      this.gridApi.forEachNodeAfterFilter(function(rowNode, index) {
-        rowNode.data.attrs.map(element => {
-          attr_filters[element.attr] = true;
-        });
-        catalog_number_filters[rowNode.data.cat] = true;
-        class_type_filters[rowNode.data.com] = true;
-        course_filters[rowNode.data.nam] = true;
-        rowNode.data.instructors.map(element => {
-          instructor_filters[element.unid] = true;
-        });
-        semester_filters[rowNode.data.semcode] = true;
-      });
-      this.datastore.filterSelectList('attr_select_list', 'attr', attr_filters);
-      this.datastore.filterSelectList('catalog_number_select_list', 'cat', catalog_number_filters);
-      this.datastore.filterSelectList('class_type_select_list', 'name', class_type_filters);
-      this.datastore.filterSelectList('course_select_list', 'nam', course_filters);
-      this.datastore.filterSelectList('instructor_select_list', 'unid', instructor_filters);
-      this.datastore.filterSelectList('semester_select_list', 'semcode', semester_filters);
-      this.datastore.sendMessage('redraw_select_lists');
+      this.datastore.filterHasChanged(this.gridApi);
     } else {
-      this.datastore.filterSelectListTrue();
+      this.datastore.setAllSelectListFilterItemsToActive();
     }
   }
 

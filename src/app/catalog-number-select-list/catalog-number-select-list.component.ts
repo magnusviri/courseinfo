@@ -11,7 +11,6 @@ import { SelectListComponent } from '../select-list/select-list.component';
 export class CatalogNumberSelectListComponent extends SelectListComponent implements OnInit {
   // Overrides
   public quickFilterName = 'catalogNumberQuickFilter';
-  public cookieFilterName = 'catalogNumberFilter';
   public datastoreSelectList = 'catalog_number_select_list';
   public datastoreFilter = 'catalog_number_filter';
   public columnState = {

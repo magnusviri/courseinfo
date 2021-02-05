@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { JsonApiDatastoreConfig, JsonApiDatastore, DatastoreConfig } from 'angular2-jsonapi';
+import { DatastoreConfig, ErrorResponse, JsonApiDatastore, JsonApiDatastoreConfig, JsonApiQueryData } from 'angular2-jsonapi';
 import { Observable, Subject } from 'rxjs';
 
 import { Attr } from './models/attr';
@@ -10,8 +10,6 @@ import { Instructor } from './models/instructor';
 import { MeetsWith } from './models/meets_with';
 import { Special } from './models/special';
 import { WhenWhere } from './models/when_where';
-
-// import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
 
 export interface ClassType {
   // id: number;
@@ -49,25 +47,28 @@ const config: DatastoreConfig = {
 export class DatastoreService extends JsonApiDatastore {
 
   private subscribers = new Subject<any>();
+  public select_lists: {} = {
+    'attr_select_list': null,
+    'catalog_number_select_list': null,
+    'class_type_select_list': null,
+    'course_select_list': null,
+    'instructor_select_list': null,
+    'semester_select_list': null,
+  };
 
-  public attr_filter: string[] = [];
-  public catalog_number_filter: string[] = [];
-  public class_type_filter: string[] = [];
-  public course_filter: string[] = [];
-  public instructor_filter: string[] = [];
-  public semester_filter: string[] = [];
-
-  public attr_select_list: any[];
-  public catalog_number_select_list: any[];
-  public class_type_select_list: ClassType[];
-  public course_select_list: any[];
-  public instructor_select_list: any[];
-  public semester_select_list: Semester[];
+  public select_list_filter: {} = {
+    'attr_filter': [],
+    'catalog_number_filter': [],
+    'class_type_filter': [],
+    'course_filter': [],
+    'instructor_filter': [],
+    'semester_filter': [],
+  };
 
   public courses: any[];
   public course_by_num: any[] = [];
 
-  public seasons_map = {4: "Spring", 6: "Summer", 8:"Fall"};
+  public seasons_map = {4: 'Spring', 6: 'Summer', 8:'Fall'};
 
   constructor(http: HttpClient) {
     super(http);
@@ -83,9 +84,6 @@ export class DatastoreService extends JsonApiDatastore {
   }
 
   sendMessage(message: string) {
-    if (message == "courses_loaded") {
-      this.makeCourseList();
-    }
     this.subscribers.next({ text: message });
   }
 
@@ -97,25 +95,55 @@ export class DatastoreService extends JsonApiDatastore {
     return this.subscribers.asObservable();
   }
 
+  filterHasChanged(gridApi) {
+    let filter_lists = [
+      ['attr', 'attr_select_list'],
+      ['cat', 'catalog_number_select_list'],
+      ['com', 'class_type_select_list'],
+      ['nam', 'course_select_list'],
+      ['unid', 'instructor_select_list'],
+      ['semcode', 'semester_select_list'],
+    ];
+    let found_fields: [] = [];
+    for (var field of filter_lists) {
+        found_fields[field[0]] = [];
+    }
+    gridApi.forEachNodeAfterFilter(function(rowNode, index) {
+      rowNode.data['attrs'].map(element => {
+        found_fields['attr'][element['attr']] = true;
+      });
+      found_fields['cat'][rowNode.data['cat']] = true;
+      found_fields['com'][rowNode.data['com']] = true;
+      found_fields['nam'][rowNode.data['nam']] = true;
+      rowNode.data['instructors'].map(element => {
+        found_fields['unid'][element['unid']] = true;
+      });
+      found_fields['semcode'][rowNode.data['semcode']] = true;
+    });
+    for (var field of filter_lists) {
+      this.filterSelectList(field[1], field[0], found_fields[field[0]]);
+    }
+    this.sendMessage('redraw_select_lists');
+  }
+
   isFilterPresent() {
-    var bla =
-      this.attr_filter.length +
-      this.class_type_filter.length +
-      this.course_filter.length +
-      this.catalog_number_filter.length +
-      this.instructor_filter.length +
-      this.semester_filter.length;
-    return bla > 0;
+    var bla = 0;
+    for (var filter in this.select_list_filter) {
+      if (this.select_list_filter[filter]) {
+        bla += this.select_list_filter[filter].length;
+      }
+    }
+    return bla;
   }
 
   filterCourseResults(node: any) {
     var pass = true;
-    if (this.attr_filter.length > 0) {
+    if (this.select_list_filter['attr_filter'].length > 0) {
       // Logical OR
       let ii = 0;
       let pass2 = false;
       while (ii < node.data.attrs.length) {
-        pass2 = this.attr_filter.includes(node.data.attrs[ii].attr);
+        pass2 = this.select_list_filter['attr_filter'].includes(node.data.attrs[ii].attr);
         if (pass2) {
           ii = node.data.attrs.length;
         } else {
@@ -125,25 +153,25 @@ export class DatastoreService extends JsonApiDatastore {
       pass = pass2;
     }
     // Logical AND
-    if (pass && this.class_type_filter.length > 0) {
-      pass = this.class_type_filter.includes(node.data.com);
+    if (pass && this.select_list_filter['class_type_filter'].length > 0) {
+      pass = this.select_list_filter['class_type_filter'].includes(node.data.com);
     }
 
     // Logical AND
-    if (pass && this.course_filter.length > 0) {
-      pass = this.course_filter.includes(node.data.nam);
+    if (pass && this.select_list_filter['course_filter'].length > 0) {
+      pass = this.select_list_filter['course_filter'].includes(node.data.nam);
     }
     // Logical AND
-    if (pass && this.catalog_number_filter.length > 0) {
-      pass = this.catalog_number_filter.includes(node.data.cat);
+    if (pass && this.select_list_filter['catalog_number_filter'].length > 0) {
+      pass = this.select_list_filter['catalog_number_filter'].includes(node.data.cat);
     }
     // Logical AND
-    if (pass && this.instructor_filter.length > 0) {
+    if (pass && this.select_list_filter['instructor_filter'].length > 0) {
       // Logical OR
       let ii = 0;
       let pass2 = false;
       while (ii < node.data.instructors.length) {
-        pass2 = this.instructor_filter.includes(node.data.instructors[ii].unid);
+        pass2 = this.select_list_filter['instructor_filter'].includes(node.data.instructors[ii].unid);
         if (pass2) {
           ii = node.data.instructors.length;
         } else {
@@ -153,104 +181,165 @@ export class DatastoreService extends JsonApiDatastore {
       pass = pass2;
     }
     // Logical AND
-    if (pass && this.semester_filter.length > 0) {
-      pass = this.semester_filter.includes(node.data.semcode);
+    if (pass && this.select_list_filter['semester_filter'].length > 0) {
+      pass = this.select_list_filter['semester_filter'].includes(node.data.semcode);
     }
     return pass;
   }
 
   filterSelectList(list: string, key: string, filter_list: boolean[]) {
-    for (var element of this[list]) {
+    for (var element of this.select_lists[list]) {
       element.active = filter_list[element[key]];
     }
   }
 
-  filterSelectListTrue() {
-    for (var element1 of this.attr_select_list) {
+  setAllSelectListFilterItemsToActive() {
+    for (var element1 of this.select_lists['attr_select_list']) {
       element1.active = true;
     }
-    for (var element2 of this.catalog_number_select_list) {
+    for (var element2 of this.select_lists['catalog_number_select_list']) {
       element2.active = true;
     }
-    for (var element3 of this.class_type_select_list) {
+    for (var element3 of this.select_lists['class_type_select_list']) {
       element3.active = true;
     }
-    for (var element4 of this.course_select_list) {
+    for (var element4 of this.select_lists['course_select_list']) {
       element4.active = true;
     }
-    for (var element5 of this.instructor_select_list) {
+    for (var element5 of this.select_lists['instructor_select_list']) {
       element5.active = true;
     }
-    for (var element6 of this.semester_select_list) {
+    for (var element6 of this.select_lists['semester_select_list']) {
       element6.active = true;
     }
     this.sendMessage('redraw_select_lists');
   }
 
-  makeCourseList() {
-    this.course_select_list = [];
-    this.catalog_number_select_list = [];
-    this.class_type_select_list = [];
-    let found_courses: boolean[] = [];
-    let found_catalog_numbers: boolean[] = [];
-    let found_class_types: boolean[] = [];
-
-    let first_year: number = Number.MAX_VALUE;
-    let last_year: number = 0;
-    let last_season: number;
-
-    this.courses.forEach((element, index) => {
-      this.course_by_num[element['num']*10000+(element['yea']-1900)*10+element['sem']] = index;
-
-      if (!(element['com'] in found_class_types)) {
-        found_class_types[element['com']] = true;
-        this.class_type_select_list.push({
-          name: element['com'],
-          // abr: '',
-          active: true,
-        });
-      }
-
-      if (!(element['cat'] in found_catalog_numbers)) {
-        found_catalog_numbers[element['cat']] = true;
-        this.catalog_number_select_list.push({
-          cat: element['cat'],
-          active: true,
-        });
-      }
-
-      if (!(element['nam'] in found_courses)) {
-        found_courses[element['nam']] = true;
-        this.course_select_list.push({
-          nam: element['nam'],
-          active: true,
-        });
-      }
-
-      if ( element['yea'] < first_year) {
-        first_year = element['yea'];
-      }
-      if ( element['yea'] > last_year) {
-        last_year = element['yea'];
-        last_season = element['sem'];
-      }
-
-      element.semester = this.seasons_map[element.sem];
-      element.semcode = this.buildSemcode(element['yea'], element['sem'])
-    });
-    this.buildSemesterSelectList(first_year, last_year, last_season);
+  selectListFilterChanged(filterName, data) {
+    this.select_list_filter[filterName] = data;
+    this.cookieService.putObject(filterName, data);
+    this.sendMessage('select_list_changed');
   }
 
   clearAllFilters() {
-    this.sendMessage('clear_quick_filter');
+    this.sendMessage('clear_filters');
+  }
+
+  loadData() {
+    this.findAll(Course, {
+      include: 'attrs,description,instructors,meets_with,special,when_where',
+      filter: {
+        years: '3',
+      },
+    }).subscribe(
+      (data: JsonApiQueryData<Course>) => {
+        this.courses = data.getModels();
+        this.makeCourseListAndFilters();
+        this.sendMessage('courses_loaded');
+      },
+      (errorResponse) => {
+       if (errorResponse instanceof ErrorResponse) {
+             // do something with errorResponse
+             console.log(errorResponse.errors);
+       }
+    });
+  }
+
+  makeCourseListAndFilters() {
+    // Loop through all the courses and get all the needed info and make other changes.
+    let filter_lists = ['attr', 'cat', 'com', 'unid', 'nam'];
+    let found_fields: [] = [];
+    for (var field of filter_lists) {
+        found_fields[field] = [];
+    }
+    let first_year: number = Number.MAX_VALUE;
+    let last_year: number = 0;
+    let last_season: number;
+    this.courses.forEach((course, index) => {
+      this.course_by_num[course['num']*10000+(course['yea']-1900)*10+course['sem']] = index;
+      for (var element of course['attrs']) {
+        if (!(course['attr'] in found_fields['attr'])) {
+          found_fields['attr'][element['attr']] = {
+            attr: element['attr'],
+            active: true,
+          };
+        }
+      }
+      if (!(course['cat'] in found_fields['cat'])) {
+        found_fields['cat'][course['cat']] = {
+          cat: course['cat'],
+          active: true,
+        };
+      }
+      if (!(course['com'] in found_fields['com'])) {
+        found_fields['com'][course['com']] = {
+          name: course['com'],
+          // abr: '',
+          active: true,
+        };
+      }
+      if (!(course['nam'] in found_fields['nam'])) {
+        found_fields['nam'][course['nam']] = {
+          nam: course['nam'],
+          active: true,
+        };
+      }
+      for (var element of course['instructors']) {
+        if (!(element['unid'] in found_fields['unid'])) {
+          found_fields['unid'][element['unid']] = {
+            unid: element['unid'],
+            name: element['name'],
+            active: true,
+          };
+        }
+      }
+      if ( course['yea'] < first_year) {
+        first_year = course['yea'];
+      }
+      if ( course['yea'] > last_year) {
+        last_year = course['yea'];
+        last_season = course['sem'];
+      }
+      course.semester = this.seasons_map[course.sem];
+      course.semcode = this.buildSemcode(course['yea'], course['sem'])
+    });
+
+    // Create filter lists
+    this.select_lists['attr_select_list'] = [];
+    for (var value in found_fields['attr']) {
+      this.select_lists['attr_select_list'].push(found_fields['attr'][value]);
+    }
+    this.select_lists['catalog_number_select_list'] = [];
+    for (var value in found_fields['cat']) {
+      this.select_lists['catalog_number_select_list'].push(found_fields['cat'][value]);
+    }
+    this.select_lists['class_type_select_list'] = [];
+    for (var value in found_fields['com']) {
+      this.select_lists['class_type_select_list'].push(found_fields['com'][value]);
+    }
+    this.select_lists['course_select_list'] = [];
+    for (var value in found_fields['nam']) {
+      this.select_lists['course_select_list'].push(found_fields['nam'][value]);
+    }
+    this.select_lists['instructor_select_list'] = [];
+    for (var value in found_fields['unid']) {
+      this.select_lists['instructor_select_list'].push(found_fields['unid'][value]);
+    }
+
+    // Load filter cookies
+    let test = <any[]>this.cookieService.getObject('semester_filter') || [];
+    console.log(test);
+    console.log(this.select_list_filter['semester_filter']);
+
+    this.buildSemesterSelectList(first_year, last_year, last_season);
   }
 
   buildSemesterSelectList(first_year: number, last_year: number, last_season: number) {
     let id = 0;
-    this.semester_select_list = [];
+    this.select_lists['semester_select_list'] = [];
     let season_num: number =last_season;
     while (season_num >= 4 ) {
-      this.semester_select_list.push({
+      this.select_lists['semester_select_list'].push({
         id: id,
         year:last_year,
         season: this.seasons_map[season_num],
@@ -262,7 +351,7 @@ export class DatastoreService extends JsonApiDatastore {
     }
     for (var year of this.reverse_range((last_year-1),first_year)) {
       for (var season of [8, 6, 4]) {
-        this.semester_select_list.push({
+        this.select_lists['semester_select_list'].push({
           id: id,
           year:year,
           season: this.seasons_map[season],
