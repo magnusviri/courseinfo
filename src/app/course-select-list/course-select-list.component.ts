@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { CookieService } from 'ngx-cookie';
 import { DatastoreService } from '../datastore.service';
 import { SelectListComponent } from '../select-list/select-list.component';
 
@@ -10,48 +9,31 @@ import { SelectListComponent } from '../select-list/select-list.component';
 })
 export class CourseSelectListComponent extends SelectListComponent implements OnInit {
   // Overrides
-  public quickFilterName = 'courseQuickFilter';
-  public datastoreSelectList = 'course_select_list';
   public datastoreFilter = 'course_filter';
+  public datastoreSelectList = 'course_select_list';
+  public quickFilterName = 'courseQuickFilter';
+  public selectionChange = 'nam';
+  private field = this.selectionChange;
+  private headerName = 'Course Name';
   public columnState = {
-    colId: 'nam',
+    colId: this.field,
     sort: 'asc',
   };
-  public someName = 'nam';
-
-  constructor(datastore: DatastoreService, cookieService: CookieService) {
-    super(datastore, cookieService);
+  constructor(datastore: DatastoreService) {
+    super(datastore);
     this.columnDefs = [
       {
-        field: 'nam',
-        headerName: 'Course Name',
-        sortable: true,
-        sortingOrder: ['asc', 'desc'],
-        tooltipField: 'nam',
+        checkboxSelection: true,
+        field: this.field,
         headerCheckboxSelection: true,
         headerCheckboxSelectionFilteredOnly: true,
-        checkboxSelection: true,
+        headerName: this.headerName,
+        sortable: true,
+        sortingOrder: ['asc', 'desc'],
+        tooltipField: this.field,
       },
     ];
-    this.defaultColDef = {
-      flex: 1,
-    };
-    this.rowSelection = 'multiple';
-    this.postSort = function (rowNodes) {
-      function move(toIndex, fromIndex) {
-        rowNodes.splice(toIndex, 0, rowNodes.splice(fromIndex, 1)[0]);
-      }
-      var nextInsertPos = 0;
-      for (var i = 0; i < rowNodes.length; i++) {
-        if (rowNodes[i].data.active) {
-          move(nextInsertPos, i);
-          nextInsertPos++;
-        }
-      }
-    };
   }
-
   ngOnInit(): void {
   }
-
 }

@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CookieService } from 'ngx-cookie';
 import { DatastoreService } from '../datastore.service';
 import { Subscription } from 'rxjs';
 import { CourseDetailLinkComponent } from '../course-detail-link/course-detail-link.component';
@@ -20,7 +19,7 @@ export class CourseResultsComponent implements OnInit, OnDestroy {
   public paginationPageSize;
   private datastoreMessages: Subscription;
 
-  constructor(private datastore: DatastoreService, private cookieService: CookieService) {
+  constructor(private datastore: DatastoreService) {
     this.columnDefs = [
       {
         field: 'sem',
@@ -149,20 +148,12 @@ export class CourseResultsComponent implements OnInit, OnDestroy {
     this.suppressRowClickSelection = true;
   }
 
-  isExternalFilterPresent() {
-    if (aggrid_datastore){
-      return aggrid_datastore.isFilterPresent();
-    }
-    return false;
-  }
+  //////////////////////////////////////////////////////////////////////////////////////////
+  // ag-grid event handlers (all specified in template)
 
-  doesExternalFilterPass(node) {
-    if (aggrid_datastore){
-      return aggrid_datastore.filterCourseResults(node);
-    }
-    return true;
-  }
-
+  // The grid has initialised. Use this event if, for example, you need to use the grid's API
+  // to fix the columns to size. (named after C64...)
+  // https://www.ag-grid.com/documentation/javascript/grid-events/
   onGridReady(params) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
@@ -175,7 +166,7 @@ export class CourseResultsComponent implements OnInit, OnDestroy {
       ],
       defaultState: { sort: null },
     });
-    this.paginationPageSize = this.cookieService.get("courseResultsPaginationPageSize") || 20;
+    this.paginationPageSize = this.datastore.getPref("courseResultsPaginationPageSize");
     if ( ! this.datastore.courses ) {
       this.datastoreMessages = this.datastore.onMessage().subscribe(
         message => {this.onMessage(message)}
@@ -185,6 +176,47 @@ export class CourseResultsComponent implements OnInit, OnDestroy {
       this.gridApi.onFilterChanged();
     }
   }
+
+  // Called by Grid event biding and in onGridReady, and in onMessage by the messages
+  // courses_loaded and select_list_changed
+  // After filters have been changed via their API, you must ensure the method
+  // gridApi.onFilterChanged() is called to tell the grid to filter the rows again.
+  // https://www.ag-grid.com/documentation/angular/filter-api/
+  // This is the start of a long process and includes redrawing everything
+  onFilterChanged(event) {
+    // console.log("cr onFilterChanged ----------------------------------------------------------------------------"+window.performance.now())
+    // this is called after this.gridApi.onFilterChanged() is finished
+    if (this.isExternalFilterPresent()) {
+      this.datastore.filterHasChanged(this.gridApi);
+    } else {
+      this.datastore.setAllSelectListFilterItemsToActive();
+    }
+    // console.log("cr onFilterChanged ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"+window.performance.now())
+  }
+
+  // Called by Grid event biding and from onFilterChanged
+
+  // External filters are the select lists
+  // https://www.ag-grid.com/documentation/angular/filter-external/
+  isExternalFilterPresent() {
+    if (aggrid_datastore){
+      return aggrid_datastore.isSelectListFilterPresent();
+    }
+    return false;
+  }
+
+  // Called by Grid event biding and from onFilterChanged
+
+  // Check to see if the row is displayed or not
+  doesExternalFilterPass(node) {
+    if (aggrid_datastore){
+      return aggrid_datastore.filterCourseResultRow(node);
+    }
+    return true;
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////
+  // datastoreMessages subscription methods
 
   onMessage(message) {
     if (message) {
@@ -198,19 +230,12 @@ export class CourseResultsComponent implements OnInit, OnDestroy {
     }
   }
 
-  onFilterChanged(event) {
-    // this is called after this.gridApi.onFilterChanged() is finished
-    if (this.isExternalFilterPresent()) {
-      this.datastore.filterHasChanged(this.gridApi);
-    } else {
-      this.datastore.setAllSelectListFilterItemsToActive();
-    }
-  }
+  //////////////////////////////////////////////////////////////////////////////////////////
 
   onPageSizeChanged() {
     var value = (<HTMLInputElement>document.getElementById('page-size')).value;
     this.gridApi.paginationSetPageSize(Number(value));
-    this.cookieService.put("courseResultsPaginationPageSize", value);
+    this.datastore.setPref("courseResultsPaginationPageSize", value);
   }
 
   ngOnInit(): void {
@@ -224,7 +249,7 @@ export class CourseResultsComponent implements OnInit, OnDestroy {
 
 }
 
-var aggrid_datastore = null; // this is needed because ag-grid external filters are wonky...
+var aggrid_datastore = null; // because ag-grid external filters seem to run out of scope, not sure how to fix this one other than making this a global.
 
 
 // router links

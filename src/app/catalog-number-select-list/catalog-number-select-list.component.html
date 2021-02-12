@@ -3,7 +3,7 @@
         type="text"
         (input)="onQuickFilterChanged()"
         id="catalogNumberQuickFilter"
-        placeholder="Filter catalog numbers"
+        placeholder="Filter Catalog Numbers"
         [value]="quickFilter"
     />
     <ag-grid-angular
@@ -14,7 +14,7 @@
         [columnDefs]="columnDefs"
         [defaultColDef]="defaultColDef"
         [enableBrowserTooltips]="true"
-        [postSort]="postSort"
+        [postSort]="onPostSort"
         [rowClassRules]="rowClassRules"
         [rowData]="rowData"
         [rowMultiSelectWithClick]="true"

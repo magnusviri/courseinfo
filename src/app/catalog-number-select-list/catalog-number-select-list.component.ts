@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { CookieService } from 'ngx-cookie';
 import { DatastoreService } from '../datastore.service';
 import { SelectListComponent } from '../select-list/select-list.component';
 
@@ -10,48 +9,31 @@ import { SelectListComponent } from '../select-list/select-list.component';
 })
 export class CatalogNumberSelectListComponent extends SelectListComponent implements OnInit {
   // Overrides
-  public quickFilterName = 'catalogNumberQuickFilter';
-  public datastoreSelectList = 'catalog_number_select_list';
   public datastoreFilter = 'catalog_number_filter';
+  public datastoreSelectList = 'catalog_number_select_list';
+  public quickFilterName = 'catalogNumberQuickFilter';
+  public selectionChange = 'cat';
+  private field = this.selectionChange;
+  private headerName = '#';
   public columnState = {
-    colId: 'cat',
+    colId: this.field,
     sort: 'asc',
   };
-  public someName = 'cat';
-
-  constructor(datastore: DatastoreService, cookieService: CookieService) {
-    super(datastore, cookieService);
+  constructor(datastore: DatastoreService) {
+    super(datastore);
     this.columnDefs = [
       {
-        field: 'cat',
-        headerName: '#',
-        tooltipField: 'cat',
+        checkboxSelection: true,
+        field: this.field,
         headerCheckboxSelection: true,
         headerCheckboxSelectionFilteredOnly: true,
+        headerName: this.headerName,
         sortable: true,
         sortingOrder: ['asc', 'desc'],
-        checkboxSelection: true,
+        tooltipField: this.field,
       },
     ];
-    this.defaultColDef = {
-      flex: 1,
-    };
-    this.rowSelection = 'multiple';
-    this.postSort = function (rowNodes) {
-      function move(toIndex, fromIndex) {
-        rowNodes.splice(toIndex, 0, rowNodes.splice(fromIndex, 1)[0]);
-      }
-      var nextInsertPos = 0;
-      for (var i = 0; i < rowNodes.length; i++) {
-        if (rowNodes[i].data.active) {
-          move(nextInsertPos, i);
-          nextInsertPos++;
-        }
-      }
-    };
   }
-
   ngOnInit(): void {
   }
-
 }

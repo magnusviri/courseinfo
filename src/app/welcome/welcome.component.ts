@@ -7,10 +7,18 @@ import { DatastoreService } from '../datastore.service';
   styleUrls: ['./welcome.component.scss']
 })
 export class WelcomeComponent implements OnInit {
+  public loadYears;
 
   constructor(private datastore: DatastoreService) {}
 
   ngOnInit(): void {
+    this.loadYears = this.datastore.getPref('loadYears');
+  }
+
+  onLoadYearsChanged() {
+    var value = (<HTMLInputElement>document.getElementById('load-years')).value;
+    this.datastore.setPref('loadYears', value);
+    alert("You must manually reload the page to effect this change.");
   }
 
   clearAllFilters() {

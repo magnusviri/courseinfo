@@ -1,3 +1,4 @@
+import { CookieService } from 'ngx-cookie';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DatastoreConfig, ErrorResponse, JsonApiDatastore, JsonApiDatastoreConfig, JsonApiQueryData } from 'angular2-jsonapi';
@@ -67,13 +68,18 @@ export class DatastoreService extends JsonApiDatastore {
 
   public courses: any[];
   public course_by_num: any[] = [];
+  private firstTime = true;
 
   public seasons_map = {4: 'Spring', 6: 'Summer', 8:'Fall'};
 
-  constructor(http: HttpClient) {
+  constructor(http: HttpClient, private cookieService: CookieService) {
     super(http);
   }
 
+  //////////////////////////////////////////////////////////////////////////////////////////
+  // Called by smaller components
+
+  // Called by Course Detail component
   getCourse(course_number) {
     var course_id = this.course_by_num[course_number];
     if (course_id) {
@@ -83,18 +89,22 @@ export class DatastoreService extends JsonApiDatastore {
     }
   }
 
-  sendMessage(message: string) {
-    this.subscribers.next({ text: message });
+  // Called by Welcome Component
+  clearAllFilters() {
+    this.sendMessage('clear_filters');
   }
 
-  clearMessages() {
-    this.subscribers.next();
+  // Called by Select List Component onSelectionChanged
+  selectListFilterChanged(filterName, data) {
+    this.select_list_filter[filterName] = data;
+    this.sendMessage('select_list_changed');
   }
 
-  onMessage(): Observable<any> {
-    return this.subscribers.asObservable();
-  }
+  //////////////////////////////////////////////////////////////////////////////////////////
+  // Called by Course Results Component
 
+  // Called by Course Results Component onFilterChanged when there IS an external filter
+  // This is what changes the select lists black or grey status
   filterHasChanged(gridApi) {
     let filter_lists = [
       ['attr', 'attr_select_list'],
@@ -121,22 +131,55 @@ export class DatastoreService extends JsonApiDatastore {
       found_fields['semcode'][rowNode.data['semcode']] = true;
     });
     for (var field of filter_lists) {
-      this.filterSelectList(field[1], field[0], found_fields[field[0]]);
+      for (var element of this.select_lists[field[1]]) {
+        element.active = found_fields[field[0]][element[field[0]]];
+      }
     }
     this.sendMessage('redraw_select_lists');
   }
 
-  isFilterPresent() {
-    var bla = 0;
-    for (var filter in this.select_list_filter) {
-      if (this.select_list_filter[filter]) {
-        bla += this.select_list_filter[filter].length;
-      }
+  // Called by Course Results Component onFilterChanged when there IS NOT an external filter
+  setAllSelectListFilterItemsToActive() {
+    for (var element1 of this.select_lists['attr_select_list']) {
+      element1.active = true;
     }
-    return bla;
+    for (var element2 of this.select_lists['catalog_number_select_list']) {
+      element2.active = true;
+    }
+    for (var element3 of this.select_lists['class_type_select_list']) {
+      element3.active = true;
+    }
+    for (var element4 of this.select_lists['course_select_list']) {
+      element4.active = true;
+    }
+    for (var element5 of this.select_lists['instructor_select_list']) {
+      element5.active = true;
+    }
+    for (var element6 of this.select_lists['semester_select_list']) {
+      element6.active = true;
+    }
+    if (this.firstTime) {
+      // This is the wrong way to do this but it works until I can figure out the right way
+      this.firstTime = false;
+      this.sendMessage('redraw_select_lists_start');
+    } else {
+      this.sendMessage('redraw_select_lists');
+    }
   }
 
-  filterCourseResults(node: any) {
+  // Called by Course Results Component isExternalFilterPresent to see if there is an external filter
+  isSelectListFilterPresent() {
+    var count = 0;
+    for (var filter in this.select_list_filter) {
+      if (this.select_list_filter[filter]) {
+        count += this.select_list_filter[filter].length;
+      }
+    }
+    return count;
+  }
+
+  // Called by Course Results Component doesExternalFilterPass to see if the row is displayed or not
+  filterCourseResultRow(node: any) {
     var pass = true;
     if (this.select_list_filter['attr_filter'].length > 0) {
       // Logical OR
@@ -187,50 +230,67 @@ export class DatastoreService extends JsonApiDatastore {
     return pass;
   }
 
-  filterSelectList(list: string, key: string, filter_list: boolean[]) {
-    for (var element of this.select_lists[list]) {
-      element.active = filter_list[element[key]];
-    }
+  //////////////////////////////////////////////////////////////////////////////////////////
+  // Yum yum! COokies!
+
+  setPref(name, value) {
+    this.cookieService.put(name, value);
   }
 
-  setAllSelectListFilterItemsToActive() {
-    for (var element1 of this.select_lists['attr_select_list']) {
-      element1.active = true;
+  getPref(name) {
+    let value = this.cookieService.get(name);
+    if (value == null) {
+      switch(name) {
+        case "courseResultsPaginationPageSize":
+          value = "20";
+          break;
+        case "loadYears":
+          value = "5";
+          break;
+        default:
+          value = "";
+          break;
+      }
     }
-    for (var element2 of this.select_lists['catalog_number_select_list']) {
-      element2.active = true;
-    }
-    for (var element3 of this.select_lists['class_type_select_list']) {
-      element3.active = true;
-    }
-    for (var element4 of this.select_lists['course_select_list']) {
-      element4.active = true;
-    }
-    for (var element5 of this.select_lists['instructor_select_list']) {
-      element5.active = true;
-    }
-    for (var element6 of this.select_lists['semester_select_list']) {
-      element6.active = true;
-    }
-    this.sendMessage('redraw_select_lists');
+    return value;
   }
 
-  selectListFilterChanged(filterName, data) {
-    this.select_list_filter[filterName] = data;
-    this.cookieService.putObject(filterName, data);
-    this.sendMessage('select_list_changed');
+  setPrefObj(name, value) {
+    this.cookieService.putObject(name, value);
   }
 
-  clearAllFilters() {
-    this.sendMessage('clear_filters');
+  getPrefObj(name) {
+    let value = this.cookieService.getObject(name);
+    return value;
   }
+
+  //////////////////////////////////////////////////////////////////////////////////////////
+  // datastoreMessages
+
+  onMessage(): Observable<any> {
+    return this.subscribers.asObservable();
+  }
+
+  sendMessage(message: string) {
+    this.subscribers.next({ text: message });
+  }
+
+  clearMessages() {
+    this.subscribers.next();
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////
+  // Called by App Component
 
   loadData() {
+    let loadYears = this.getPref("loadYears");
+    let filter = {};
+    if ( loadYears && ! isNaN(Number(loadYears)) ) {
+      filter = { years: loadYears }
+    }
     this.findAll(Course, {
       include: 'attrs,description,instructors,meets_with,special,when_where',
-      filter: {
-        years: '3',
-      },
+      filter: filter,
     }).subscribe(
       (data: JsonApiQueryData<Course>) => {
         this.courses = data.getModels();
@@ -245,6 +305,7 @@ export class DatastoreService extends JsonApiDatastore {
     });
   }
 
+  // Called by loadData
   makeCourseListAndFilters() {
     // Loop through all the courses and get all the needed info and make other changes.
     let filter_lists = ['attr', 'cat', 'com', 'unid', 'nam'];
@@ -273,7 +334,7 @@ export class DatastoreService extends JsonApiDatastore {
       }
       if (!(course['com'] in found_fields['com'])) {
         found_fields['com'][course['com']] = {
-          name: course['com'],
+          com: course['com'],
           // abr: '',
           active: true,
         };
@@ -325,15 +386,10 @@ export class DatastoreService extends JsonApiDatastore {
     for (var value in found_fields['unid']) {
       this.select_lists['instructor_select_list'].push(found_fields['unid'][value]);
     }
-
-    // Load filter cookies
-    let test = <any[]>this.cookieService.getObject('semester_filter') || [];
-    console.log(test);
-    console.log(this.select_list_filter['semester_filter']);
-
     this.buildSemesterSelectList(first_year, last_year, last_season);
   }
 
+  // Called by makeCourseListAndFilters
   buildSemesterSelectList(first_year: number, last_year: number, last_season: number) {
     let id = 0;
     this.select_lists['semester_select_list'] = [];
@@ -363,10 +419,12 @@ export class DatastoreService extends JsonApiDatastore {
     }
   }
 
+  // Called by makeCourseListAndFilters and buildSemesterSelectList
   buildSemcode(yearText:number,semester:number) {
    return (yearText - 1900) * 10 + semester;
   }
 
+  // Called by buildSemesterSelectList
   reverse_range(start, end) {
     return Array.from({length: (start-end+1)}, (v, k) => start-k);
   }
